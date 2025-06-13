@@ -1,23 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./styles.css" />
-    <title>File Upload</title>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>File Uploader</title>
 </head>
 <body>
-    <!-- header -->
-    <header id="header-mast">
-        <h1>File Uploader</h1>
+   <!-- header -->
+      <header id="header-mast">
+          <h1>File Uploader</h1>
       </header>
-    <div id="mv-bg1" class="top-0"></div>
-    <div id="mv-bg2" class="bottom-0"></div>
-    <!-- main -->
-     <div id="file-container">
-        <div id="img-container" class="hidden"></div>
-        <input multiple class="hidden" type="file" name="file" id="file-id">
-        <img src="./media/image.png" id="upload-img" alt="image to represent upload">
-     </div>
-     </html><script src="./main.js"></script>
-</body>
+      <div id="mv-bg2" class="bottom-0"></div>
+      <!-- main -->
+      <div id="file-container">
+        <div id="file-container-header">
+        <div id="file-options">
+          <ul id="file-options-container">
+            <li class="file-list-item">
+            <img src="./media/upload-tool.png" id="upload-img-tool" class="img-upload-sm btn-sm" alt="image to represent upload">
+            </li>
+            <li class="file-list-item">
+              <img src="./media/garbage-tool.png" id="garbage-img-tool" class="img-upload-sm btn-sm no-pointer" alt="image to represent upload">
+            </li>
+            <li class="file-list-item select-counter no-pointer">Selected: 0</li>
+          </ul>
+        </div>
+        </div>
+        
+          <div id="file-hold-container" class="hidden" class="list-view"></div>
+          <input multiple class="hidden" type="file" name="file" id="file-id">
+          <img src="./media/upload.png" id="upload-img" class="img-upload btn-big" alt="image to represent upload">
+      </div>
+      <script src="./main.js"></script>
+  </body>
+</html>
