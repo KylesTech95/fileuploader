@@ -227,7 +227,9 @@ function handleMultiSelection(children,target,arr){
             if(target.selected===true){
                 // console.log('target is true')
                 selectEntity(target)
+                console.log(arr.indexOf(target))
                 arr.indexOf(target)===-1 ? arr.push(target) : null;
+                console.log(arr)
             } 
             if(target.selected===false){
                 // console.log('target is false')
