@@ -14,7 +14,6 @@ const fileobj = new Object({
 // set file upload icon to middle of screen
 let midheight = window.innerHeight/2
 let midwidth = window.innerWidth/2
-filecontainer.style.top = midheight + 'px'
 let isShift = false;
 let isCtl = false;
 let isMeta = false;
@@ -23,28 +22,33 @@ let isMeta = false;
 fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
 fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
 
+// position container
+filecontainer.style.top = midheight + 'px'
 
 // upload a file
 for(let i in fileobj.buttons){
     fileobj.buttons[i].onclick = () => getFiles(fileobj.input)
 }
-
 // onchange when choosing a file or cancelling
 fileobj.input.onchange = e => fileSystemChange(e)
 
 
 
+garbage.onclick = e => {
+    if(!garbage.classList.contains('no-pointer')){
+        let currSelectedFiles = [...document.querySelectorAll('.file-obj-div')].filter(x=>x.selected===true);
 
-
-
-
+        deleteFiles(currSelectedFiles,fileobj.imgcontainer)
+    } else {
+        console.log('garbage is disabled!')
+    }
+}
 // functions
 
 // getFiles 
 function getFiles(system){
 return !system ? console.error('file system is undefined.\nCheck and try again') : system.click();
 }
-
 // filesystem change
 function fileSystemChange(e){
     let files = e.currentTarget.files || undefined;
@@ -65,13 +69,13 @@ function fileSystemChange(e){
             // create a div to represent the file
             let div = document.createElement('div')
             div.classList.add('file-obj-div')
-            div.classList.add('unselected')
+            unselectEntity(div)
             div = handleFileByType(currfile,div) // return div and store in div
             container.appendChild(div) // append div to container
             // if getMedia file === currfile
             if(div.getMedia === currfile){
                 // select files
-                div.onclick = clickFile
+                div.onclick = handleFileSelection
             }
         }
         
@@ -79,7 +83,6 @@ function fileSystemChange(e){
         container.classList.add('hidden')
     } 
 }
-
 // handle file by type
 function handleFileByType(file,div){
     const type = file.type;
@@ -169,31 +172,131 @@ function handleFileByType(file,div){
     return div; // return the file
 }
 let selectedFiles = []
-function clickFile(e){
+function handleFileSelection(e){
     const listing = e.currentTarget;
-    const filemedia = listing.getMedia;
-    let parent = listing.parentElement;
+    let children = [...listing.parentElement.children]
 
-    // true/false change onclick
+    // the listing's selected status will toggle
     listing.selected = !listing.selected;
-        
-    // if Ctk and Shift is not pressed
-    if(isShift === false && isCtl === false && isMeta === false){
+    
+    // single file selection
+    if(isShift === false && isCtl === false && isMeta === false) {
+        console.log('button is not pressed')
+        selectedFiles = handleSingleSelection(children,listing,selectedFiles)
     }
+    // multi file selection
     else {
-        
-    // update total selected count
-
+        console.log('button is pressed')
+        selectedFiles = handleMultiSelection(children,listing,selectedFiles)
     }
+    console.log(selectedFiles)
     
-    
-    
-
-    
+    // update filecounter
+    updateFileCounter([select_counter,garbage],selectedFiles.length)
 
     
 }
+// handle single selection
+function handleSingleSelection(children,target,arr){ 
+    arr = []; // reset arr
+    // if target exists
+    if(target && children.includes(target)){
+        // map children
+            children = [...children].filter(w=>w!=target).map(x=>{
+            // unselect all children, but not target
+            unselectEntity(x)
+            x.selected = false;
+    })
+    
+        if(target.selected === true){
+            selectEntity(target)
+            arr.push(target)
+        }
+        if(target.selected === false){
+           unselectEntity(target)
+           arr.splice(arr.indexOf(target),1)
+        }
+    }
+    return arr; // return selected file
+}
+// handle multi selection
+function handleMultiSelection(children,target,arr){ 
+    // if target exists
+    if(target){
+        if(isMeta === true || isCtl === true){
+            if(target.selected===true){
+                // console.log('target is true')
+                selectEntity(target)
+                arr.indexOf(target)===-1 ? arr.push(target) : null;
+            } 
+            if(target.selected===false){
+                // console.log('target is false')
+                unselectEntity(target)
+                arr.splice(arr.indexOf(target),1)
+            }
+        } 
+        if(isShift===true){
+            selectEntity(target)
+        }
+    } 
+    return arr; // return selected file
+}
+// select entity
+function selectEntity(elem){
+    elem.classList.add('selected');
+    elem.classList.remove('unselected');
+    elem.classList.remove('deleted-item');
+}
+// unselect entity
+function unselectEntity(elem){
+    elem.classList.remove('selected');
+    elem.classList.add('unselected');
+    elem.classList.remove('deleted-item');
+}
+// show deleted item(s)
+function showDeleted(x){
+    x.classList.add('deleted-item')
+}
+// check if client is using a mac device
+function isMacintosh(agent){
+    return /macintosh?/ig.test(agent) ? true : false;
+}
+// file counter
+function updateFileCounter(elements,num){
+    let [file,garbage] = elements;
+    file.textContent = file.textContent.replace(/\d*$/,num)
+    if(file){
+        console.log(file)
+        if(num > 0){
+            enableElement(elements)
+        }
+        else {
+            disableElement(elements)
+        }
+    } else {
+        console.log('element not detected for counting files')
+        return false;
+    }
+}
+function disableElement(elements){
+return elements.forEach(x=>x.classList.add('no-pointer'))
+}
+function enableElement(elements){
+return elements.forEach(x=>x.classList.remove('no-pointer'))
+}
 
+// delete files fn
+function deleteFiles(files,filecontainer){
+    console.log(filecontainer)
+    console.log(files)
+
+    // delete indication
+    files.map(x=>{
+        unselectEntity(x);
+        showDeleted(x)
+    })
+    
+}
 // window events
 
 // resize
@@ -202,20 +305,28 @@ window.onresize = e => {
     fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
 }
-
 window.onkeydown = e => {
 console.log("keydown: "+e.key)
     if(/Shift/.test(e.key)){
         isShift = true;
     }
-    if(/Control/.test(e.key)){
+    if(/Control/.test(e.key) && !isMacintosh){
         isCtl = true;
 
     }
-    if(/Meta/.test(e.key)){
+    if(/Meta/.test(e.key) && isMacintosh){
         isMeta = true;
     }
 }
 window.onkeyup = e => {
-    console.log("keyup: "+e.key)
+    if(/Shift/.test(e.key)){
+        isShift = false;
+    }
+    if(/Control/.test(e.key) && !isMacintosh){
+        isCtl = false;
+
+    }
+    if(/Meta/.test(e.key) && isMacintosh){
+        isMeta = false;
+    }
 }

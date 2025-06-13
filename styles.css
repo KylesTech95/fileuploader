@@ -190,3 +190,6 @@ transition:.25s;
        cursor:pointer;
        background-color:var(--hovered);
 }
+.deleted-item{
+    background-color:#f00;
+}
