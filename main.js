@@ -4,6 +4,9 @@ const header = document.getElementById('header-mast')
 const select_counter = document.querySelector('.select-counter')
 const garbage = document.getElementById('garbage-img-tool');
 let caps = document.getElementById('caps-img-tool')
+let shift = document.getElementById('shift-img-tool')
+let ctrl = document.getElementById('ctrl-img-tool')
+let command = document.getElementById('command-img-tool')
 const fileobj = new Object({
     input:document.getElementById('file-id'),
     buttons:{
@@ -335,6 +338,9 @@ function showDeleted(x){
 function isMacintosh(agent){
     return /macintosh?/ig.test(agent) ? true : false;
 }
+function isWindows(agent){
+    return /Window?/ig.test(agent) ? true : false;
+}
 // file counter
 function updateFileCounter(elements,num){
     let [file,garbage] = elements;
@@ -394,13 +400,15 @@ window.onresize = e => {
 window.onkeydown = e => {
     if(/Shift/.test(e.key)){
         isShift = true;
+        shift.classList.remove('no-pointer')
     }
-    if(/Control/.test(e.key) && !isMacintosh){
+    if(/Control/.test(e.key)){
         isCtl = true;
-
+        ctrl.classList.remove('no-pointer')
     }
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = true;
+        command.classList.remove('no-pointer')
     }
     if(/(Delete|Backspace)/i.test(e.key) && !garbage.classList.contains('no-pointer')){
         garbage.click();
@@ -418,13 +426,15 @@ window.onkeydown = e => {
 window.onkeyup = e => {
     if(/Shift/.test(e.key)){
         isShift = false;
+        shift.classList.add('no-pointer')
     }
-    if(/Control/.test(e.key) && !isMacintosh){
+    if(/Control/.test(e.key)){
         isCtl = false;
-
+        ctrl.classList.add('no-pointer')
     }
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = false;
+        command.classList.add('no-pointer')
     }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
@@ -433,5 +443,21 @@ window.onkeyup = e => {
             caps.src = './media/caps-tool.png'
             caps.classList.add('no-pointer');
         }
+    }
+}
+window.onload = e => {
+    // get the device type
+    const agent = window.navigator.userAgent;
+
+    // if device is a mac
+    if(isMacintosh(agent)){
+        command.classList.remove('hidden');
+    } else {
+        command.classList.add('hidden');
+
+    }
+    // if device is windows
+    if(isWindows(agent)){
+        command.classList.add('hidden');
     }
 }
