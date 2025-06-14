@@ -83,7 +83,7 @@ left:0;
 }
 
 #file-hold-container{
-    display:flex;
+    display:flex; 
     flex-direction: column;
     align-items: center;
     justify-content: start;
@@ -129,6 +129,9 @@ transition:.25s;
 .btn-sm:not(.no-hover):hover{
     transform:scale(.9);
     cursor:pointer;
+}
+.disabled-tool{
+    opacity:.5;
 }
 .no-pointer{
     pointer-events: none;

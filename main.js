@@ -46,15 +46,22 @@ garbage.onclick = e => {
         console.log('garbage is disabled!')
     }
 }
-caps.onclick = e => {
+let tools = [caps,ctrl,shift,command]
+tools.forEach(t=>{
+    t.onclick = e => {
+        const item = e.currentTarget
+        tools.forEach(tool=>tool.classList.add('disabled-tool'))
     // caps is active
-    if(!e.currentTarget.classList.contains('no-pointer')){
-        // disable caps
-        
-    } else {
-        // enable caps
+    if(!item.classList.contains('disabled-tool')){
+        // disable
+        item.classList.add('disabled-tool')
+    }
+    if(item.classList.contains('disabled-tool')){
+        // disable
+        item.classList.remove('disabled-tool')
     }
 }
+})
 
 // functions
 
@@ -400,15 +407,15 @@ window.onresize = e => {
 window.onkeydown = e => {
     if(/Shift/.test(e.key)){
         isShift = true;
-        shift.classList.remove('no-pointer')
+        shift.classList.remove('disabled-tool')
     }
     if(/Control/.test(e.key)){
         isCtl = true;
-        ctrl.classList.remove('no-pointer')
+        ctrl.classList.remove('disabled-tool')
     }
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = true;
-        command.classList.remove('no-pointer')
+        command.classList.remove('disabled-tool')
     }
     if(/(Delete|Backspace)/i.test(e.key) && !garbage.classList.contains('no-pointer')){
         garbage.click();
@@ -426,15 +433,15 @@ window.onkeydown = e => {
 window.onkeyup = e => {
     if(/Shift/.test(e.key)){
         isShift = false;
-        shift.classList.add('no-pointer')
+        shift.classList.add('disabled-tool')
     }
     if(/Control/.test(e.key)){
         isCtl = false;
-        ctrl.classList.add('no-pointer')
+        ctrl.classList.add('disabled-tool')
     }
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = false;
-        command.classList.add('no-pointer')
+        command.classList.add('disabled-tool')
     }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
