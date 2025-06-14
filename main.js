@@ -3,6 +3,7 @@ const filecontainer = document.getElementById('file-container')
 const header = document.getElementById('header-mast')
 const select_counter = document.querySelector('.select-counter')
 const garbage = document.getElementById('garbage-img-tool');
+let caps = document.getElementById('caps-img-tool')
 const fileobj = new Object({
     input:document.getElementById('file-id'),
     buttons:{
@@ -20,7 +21,7 @@ let isMeta = false;
 
 // center file upload
 fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
-fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
+fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
 
 // position container
 filecontainer.style.top = midheight + 'px'
@@ -34,12 +35,21 @@ fileobj.input.onchange = e => fileSystemChange(e)
 
 
 garbage.onclick = e => {
-    if(!garbage.classList.contains('no-pointer')){
+    if(!e.currentTarget.classList.contains('no-pointer')){
         let currSelectedFiles = [...document.querySelectorAll('.file-obj-div')].filter(x=>x.selected===true);
 
         selectedFiles = deleteFiles(currSelectedFiles,[select_counter,e.currentTarget],selectedFiles)
     } else {
         console.log('garbage is disabled!')
+    }
+}
+caps.onclick = e => {
+    // caps is active
+    if(!e.currentTarget.classList.contains('no-pointer')){
+        // disable caps
+        
+    } else {
+        // enable caps
     }
 }
 
@@ -362,7 +372,7 @@ function deleteFiles(files,elements,selectedFiles){
     if(getFilesNow.length < 1){
         console.log('no more files!')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
-        fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
+        fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
     }
     return selectedFiles;
     
@@ -379,7 +389,7 @@ window.onresize = e => {
     if(document.querySelectorAll('.file-obj-div').length < 1){
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
-    fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
+    fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
 }
 window.onkeydown = e => {
     if(/Shift/.test(e.key)){
@@ -392,6 +402,18 @@ window.onkeydown = e => {
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = true;
     }
+    if(/(Delete|Backspace)/i.test(e.key) && !garbage.classList.contains('no-pointer')){
+        garbage.click();
+        console.log('garbage - remote click')
+    }
+    if(/(capslock)/i.test(e.key)){
+        let state = e.getModifierState(e.key);
+        console.log(state)
+        if(state){
+            caps.classList.remove('no-pointer');
+            caps.src = './media/caps-tool-green.png'
+        }
+    }
 }
 window.onkeyup = e => {
     if(/Shift/.test(e.key)){
@@ -403,5 +425,13 @@ window.onkeyup = e => {
     }
     if(/Meta/.test(e.key) && isMacintosh){
         isMeta = false;
+    }
+    if(/(capslock)/i.test(e.key)){
+        let state = e.getModifierState(e.key);
+        console.log(state)
+        if(!state){
+            caps.src = './media/caps-tool.png'
+            caps.classList.add('no-pointer');
+        }
     }
 }
