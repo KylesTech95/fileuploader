@@ -60,7 +60,7 @@ function fileSystemChange(e){
     // if files exist
     if(files.length > 0){ 
         // shift upload button down
-        fileobj.buttons.img.style.top =((filecontainer.clientHeight)) + "px"
+        fileobj.buttons.img.style.top =((filecontainer.clientHeight-100)) + "px"
         container.classList.remove('hidden')
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
@@ -88,7 +88,6 @@ function fileSystemChange(e){
 function hoverFn(e){
     const target = e.currentTarget;
     if(target.selected === true){
-        console.log('this is true! set to dark blue')
         target.classList.add('selected')
         target.classList.remove('unselected')
     }
@@ -96,7 +95,6 @@ function hoverFn(e){
 function hoverOutFn(e){
     const target = e.currentTarget;
     if(target.selected === true){
-        console.log('this is true! set back to light blue')
         target.classList.remove('selected')
     }
 }
@@ -197,15 +195,14 @@ function handleFileSelection(e){
     
     // single file selection
     if(isShift === false && isCtl === false && isMeta === false) {
-        console.log('button is not pressed')
+        // console.log('button is not pressed')
         selectedFiles = handleSingleSelection(children,listing,selectedFiles)
     }
     // multi file selection
     else {
-        console.log('button is pressed')
         selectedFiles = handleMultiSelection(children,listing,selectedFiles)
     }
-    console.log(selectedFiles)
+    // console.log(selectedFiles)
     
     // update filecounter
     updateFileCounter([select_counter,garbage],selectedFiles.length)
@@ -241,11 +238,8 @@ function handleMultiSelection(children,target,arr){
     if(target){
         if(isMeta === true || isCtl === true){
             if(target.selected===true){
-                // console.log('target is true')
                 selectEntity(target)
-                console.log(arr.indexOf(target))
                 arr.indexOf(target)===-1 ? arr.push(target) : null;
-                console.log(arr)
             } 
             if(target.selected===false){
                 // console.log('target is false')
@@ -259,7 +253,6 @@ function handleMultiSelection(children,target,arr){
                 // id start
                 start = arr[0]
                 if(target.selected===true){
-                    console.log('shift in progress...')
                     // id end
                     end = target
                     selectEntity(end)
@@ -272,8 +265,6 @@ function handleMultiSelection(children,target,arr){
                         if(children[i].selected===false){
                             children[i].selected = true;
                             selectEntity(children[i])
-                        } else {
-                            console.log('alternative!')
                         }
                     }
                     for(let j = children.indexOf(start); j >= children.indexOf(end); j--){
@@ -282,16 +273,34 @@ function handleMultiSelection(children,target,arr){
                         // console.log(children[i].selected);
                         arr.indexOf(children[j])===-1 ? arr.push(children[j]) : null;
                         if(children[j].selected===false){
-                            children[j].selected = true;
                             selectEntity(children[j])
-                        } else {
-                            console.log('alternative!')
+                            children[j].selected = true;
                         }
                     }
                 }
             } else {
                 console.log("Use Single Selection before using Shift")
             }
+
+            // case: selected item is outside of range (start - end)
+            // children.forEach(child=>{
+            //     if(child.selected===true){
+            //         let childIdx = children.indexOf(child),
+            //         st = children.indexOf(start),
+            //         en = children.indexOf(end);
+            //         // if child is outside range 
+            //         if((childIdx < st ||  childIdx > en) && arr.length > 1){
+            //             // set child to false
+            //             child.selected = false;
+            //             // unselect
+            //             unselectEntity(child)
+            //             // update selected files
+            //             arr.splice(arr.indexOf(child),1)
+            //             // update file count
+            //             updateFileCounter([select_counter,garbage],arr.length)
+            //         }
+            //     }
+            // })
         }
     } 
     return arr; // return selected file
@@ -367,7 +376,9 @@ function cleanUpExistingFiles(container){
 // resize
 window.onresize = e => {
     // resize fileobj.buttons 
-    fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
+    if(document.querySelectorAll('.file-obj-div').length < 1){
+        fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
+    }
     fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
 }
 window.onkeydown = e => {

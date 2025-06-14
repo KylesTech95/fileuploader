@@ -100,7 +100,7 @@ left:0;
     background:#a99f9f;
     /* position:relative; */
     /* flex-direction: column; */
-    width:1012px;
+    width:96%;
     min-height:800px;
     height:100%;
     border:2px solid #000;
@@ -113,6 +113,8 @@ left:0;
 #upload-img{
     transition: .7s;
     position:absolute;
+    width:140px;
+
 }
 /* #upload-img-tool{
 transition:.25s;
@@ -192,4 +194,10 @@ transition:.25s;
 }
 .deleted-item{
     border:2px solid #f00;
+}
+
+@media screen and (max-width:900px) {
+    #upload-img{
+        width:100px;
+    }
 }
