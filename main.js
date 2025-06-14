@@ -50,15 +50,20 @@ let tools = [caps,ctrl,shift,command]
 tools.forEach(t=>{
     t.onclick = e => {
         const item = e.currentTarget
-        tools.forEach(tool=>tool.classList.add('disabled-tool'))
+        tools.forEach(tool=> {
+tool.classList.add('disabled-tool');
+tool.selected = false;
+})
     // caps is active
     if(!item.classList.contains('disabled-tool')){
         // disable
         item.classList.add('disabled-tool')
+        item.selected = false;
     }
     if(item.classList.contains('disabled-tool')){
-        // disable
-        item.classList.remove('disabled-tool')
+        // enable
+       item.classList.remove('disabled-tool')
+       item.selected = true;
     }
 }
 })
