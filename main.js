@@ -33,16 +33,16 @@ for(let i in fileobj.buttons){
 fileobj.input.onchange = e => fileSystemChange(e)
 
 
-
 garbage.onclick = e => {
     if(!garbage.classList.contains('no-pointer')){
         let currSelectedFiles = [...document.querySelectorAll('.file-obj-div')].filter(x=>x.selected===true);
 
-        deleteFiles(currSelectedFiles,fileobj.imgcontainer)
+        selectedFiles = deleteFiles(currSelectedFiles,[select_counter,e.currentTarget],selectedFiles)
     } else {
         console.log('garbage is disabled!')
     }
 }
+
 // functions
 
 // getFiles 
@@ -55,8 +55,7 @@ function fileSystemChange(e){
     let container = fileobj.imgcontainer
     
     // cleanup leftover files
-    let existing_files = [...container.children]||null;
-    if(existing_files) existing_files.map(file=>file.remove());
+    // cleanUpExistingFiles(container)
 
     // if files exist
     if(files.length > 0){ 
@@ -76,12 +75,30 @@ function fileSystemChange(e){
             if(div.getMedia === currfile){
                 // select files
                 div.onclick = handleFileSelection
+                div.onmouseover = hoverFn
+                div.onmouse = hoverOutFn
             }
         }
         
     } else {
         container.classList.add('hidden')
     } 
+}
+
+function hoverFn(e){
+    const target = e.currentTarget;
+    if(target.selected === true){
+        console.log('this is true! set to dark blue')
+        target.classList.add('selected')
+        target.classList.remove('unselected')
+    }
+}
+function hoverOutFn(e){
+    const target = e.currentTarget;
+    if(target.selected === true){
+        console.log('this is true! set back to light blue')
+        target.classList.remove('selected')
+    }
 }
 // handle file by type
 function handleFileByType(file,div){
@@ -96,28 +113,27 @@ function handleFileByType(file,div){
         case /text/gi.test(type):
         file.element = document.createElement('p')
         // method
-        console.log('this is a Text File')
+            // console.log('this is a Text File')
         break;
         case /image/gi.test(type):
-        console.log('this is a Image File')
+            // console.log('this is a Image File')
         if(/png/gi.test(type)){
-            console.log('this is a png file')
+            // console.log('this is a png file')
         }
         if(/jpg/gi.test(type)){
-            console.log('this is a jpg file')
+            // console.log('this is a jpg file')
         }
         if(/jpeg/gi.test(type)){
-            console.log('this is jpeg file')
+            // console.log('this is jpeg file')
         }
         if(/svg/gi.test(type)){
-            console.log('this is a svg file')
+            // console.log('this is a svg file')
         }
-        
         if(/gif/gi.test(type)){
-            console.log('this is a gif file')
+            // console.log('this is a gif file')
         }
         if(/bmp/gi.test(type)){
-            console.log('this is a bmp file')
+            // console.log('this is a bmp file')
         }
         
         break;
@@ -126,41 +142,41 @@ function handleFileByType(file,div){
 
             // method
         if(/avi/gi.test(type)){
-            console.log('this is a avi file')
+            // console.log('this is a avi file')
         }
         if(/wmv/gi.test(type)){
-            console.log('this is a wmv file')
+            // console.log('this is a wmv file')
         }
         if(/mp4/gi.test(type)){
-            console.log('this is a mp4 file')
+            // console.log('this is a mp4 file')
         }
         if(/mov/gi.test(type)){
-            console.log('this is a mov file')
+            // console.log('this is a mov file')
         }
         if(/flv/gi.test(type)){
-            console.log('this is a flv file')
+            // console.log('this is a flv file')
         }
         break;
         case /audio/gi.test(type):
         file.element = document.createElement('audio')
             // method 
         if(/ogg/gi.test(type)){
-            console.log('this is a ogg file')
+            // console.log('this is a ogg file')
         }
         if(/ogg/gi.test(type)){
-            console.log('this is a ogg file')
+            // console.log('this is a ogg file')
         }
         if(/m4a/gi.test(type)){
-            console.log('this is a m4a file')
+            // console.log('this is a m4a file')
         }
         if(/flac/gi.test(type)){
-            console.log('this is a flac file')
+            // console.log('this is a flac file')
         }
         if(/mp3/gi.test(type)){
-            console.log('this is a mp3 file')
+            // console.log('this is a mp3 file')
         }
         if(/wav/gi.test(type)){
-            console.log('this is a wav file')
+            // console.log('this is a wav file')
         }
         break;
         default:
@@ -238,7 +254,44 @@ function handleMultiSelection(children,target,arr){
             }
         } 
         if(isShift===true){
-            selectEntity(target)
+            let start,end;
+            if(arr.length > 0){
+                // id start
+                start = arr[0]
+                if(target.selected===true){
+                    console.log('shift in progress...')
+                    // id end
+                    end = target
+                    selectEntity(end)
+                    
+                    for(let i = children.indexOf(start); i <= children.indexOf(end); i++){
+                        // console.log(i)
+                        // console.log(children[i]);
+                        // console.log(children[i].selected);
+                        arr.indexOf(children[i])===-1 ? arr.push(children[i]) : null;
+                        if(children[i].selected===false){
+                            children[i].selected = true;
+                            selectEntity(children[i])
+                        } else {
+                            console.log('alternative!')
+                        }
+                    }
+                    for(let j = children.indexOf(start); j >= children.indexOf(end); j--){
+                        // console.log(i)
+                        // console.log(children[i]);
+                        // console.log(children[i].selected);
+                        arr.indexOf(children[j])===-1 ? arr.push(children[j]) : null;
+                        if(children[j].selected===false){
+                            children[j].selected = true;
+                            selectEntity(children[j])
+                        } else {
+                            console.log('alternative!')
+                        }
+                    }
+                }
+            } else {
+                console.log("Use Single Selection before using Shift")
+            }
         }
     } 
     return arr; // return selected file
@@ -268,7 +321,7 @@ function updateFileCounter(elements,num){
     let [file,garbage] = elements;
     file.textContent = file.textContent.replace(/\d*$/,num)
     if(file){
-        console.log(file)
+        // console.log(file)
         if(num > 0){
             enableElement(elements)
         }
@@ -288,16 +341,26 @@ return elements.forEach(x=>x.classList.remove('no-pointer'))
 }
 
 // delete files fn
-function deleteFiles(files,filecontainer){
-    console.log(filecontainer)
-    console.log(files)
-
+function deleteFiles(files,elements,selectedFiles){
     // delete indication
     files.map(x=>{
         unselectEntity(x);
-        showDeleted(x)
+        files.forEach((a,b)=>a.remove());
+            selectedFiles = [];
+            updateFileCounter(elements,selectedFiles.length)
     })
+    let getFilesNow = document.querySelectorAll('.file-obj-div');
+    if(getFilesNow.length < 1){
+        console.log('no more files!')
+        fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
+        fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
+    }
+    return selectedFiles;
     
+}
+function cleanUpExistingFiles(container){
+    let existing_files = [...container.children]||null;
+    if(existing_files) existing_files.map(file=>file.remove());
 }
 // window events
 
@@ -308,7 +371,6 @@ window.onresize = e => {
     fileobj.buttons.img.style.left =((window.innerWidth/2)) + "px"
 }
 window.onkeydown = e => {
-console.log("keydown: "+e.key)
     if(/Shift/.test(e.key)){
         isShift = true;
     }
