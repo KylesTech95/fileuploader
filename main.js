@@ -3,10 +3,11 @@ const filecontainer = document.getElementById('file-container')
 const header = document.getElementById('header-mast')
 const select_counter = document.querySelector('.select-counter')
 const garbage = document.getElementById('garbage-img-tool');
-let caps = document.getElementById('caps-img-tool')
-let shift = document.getElementById('shift-img-tool')
-let ctrl = document.getElementById('ctrl-img-tool')
-let command = document.getElementById('command-img-tool')
+const caps = document.getElementById('caps-img-tool')
+const shift = document.getElementById('shift-img-tool')
+const ctrl = document.getElementById('ctrl-img-tool')
+const command = document.getElementById('command-img-tool')
+const stopper = document.getElementById('stop-img-tool')
 const fileobj = new Object({
     input:document.getElementById('file-id'),
     buttons:{
@@ -15,6 +16,9 @@ const fileobj = new Object({
     },
     imgcontainer:document.getElementById('file-hold-container'),
 })
+
+
+//________________________________
 // set file upload icon to middle of screen
 let midheight = window.innerHeight/2
 let midwidth = window.innerWidth/2
@@ -36,7 +40,7 @@ for(let i in fileobj.buttons){
 // onchange when choosing a file or cancelling
 fileobj.input.onchange = e => fileSystemChange(e)
 
-
+// garback onclick event
 garbage.onclick = e => {
     if(!e.currentTarget.classList.contains('no-pointer')){
         let currSelectedFiles = [...document.querySelectorAll('.file-obj-div')].filter(x=>x.selected===true);
@@ -46,30 +50,62 @@ garbage.onclick = e => {
         console.log('garbage is disabled!')
     }
 }
-let tools = [caps,ctrl,shift,command]
+
+// iterate through tools
+let tools = [caps,ctrl,shift,command,stopper]
 tools.forEach(t=>{
     t.onclick = e => {
+    // if there is at least 2 file present
+    if(document.querySelectorAll('.file-obj-div').length > 1){
+        isShift = false;
+        isMeta = false;
+        isCtl = false;
+        
         const item = e.currentTarget
         tools.forEach(tool=> {
-tool.classList.add('disabled-tool');
-tool.selected = false;
-})
-    // caps is active
-    if(!item.classList.contains('disabled-tool')){
-        // disable
-        item.classList.add('disabled-tool')
-        item.selected = false;
+        tool.classList.add('disabled-tool');
+        })
+        // caps is active
+        if(item.classList.contains('disabled-tool')){
+            // enable
+            item.classList.remove('disabled-tool')
+        }
+        handleTool(item)
     }
-    if(item.classList.contains('disabled-tool')){
-        // enable
-       item.classList.remove('disabled-tool')
-       item.selected = true;
+}   
+})
+
+
+//________________________________
+// functions
+function handleTool(tool){
+    let id = tool.id.split`-`[0]
+    if(!/stop/i.test(id)){
+        stopper.classList.remove('disabled-tool')
+    }
+    // console.log(id)  
+    switch(true){
+    case /ctrl/i.test(id):
+        isCtl = true;
+    break;
+    case /command/i.test(id):
+        isMeta = true;
+    break;
+    case /shift/i.test(id):
+        isShift = true;
+    break;
+    case /stop/i.test(id):
+        console.log('you clicked stop!')
+        tool.classList.add('disabled-tool')
+        isCtl = false;
+        isMeta = false;
+        isShift = false;
+    break;
+    default:
+        console.log(undefined);
+    break;
     }
 }
-})
-
-// functions
-
 // getFiles 
 function getFiles(system){
 return !system ? console.error('file system is undefined.\nCheck and try again') : system.click();
@@ -100,28 +136,14 @@ function fileSystemChange(e){
             if(div.getMedia === currfile){
                 // select files
                 div.onclick = handleFileSelection
-                div.onmouseover = hoverFn
-                div.onmouse = hoverOutFn
+                // div.onmouseover = hoverFn
+                // div.onmouseout = hoverOutFn
             }
         }
         
     } else {
         container.classList.add('hidden')
     } 
-}
-
-function hoverFn(e){
-    const target = e.currentTarget;
-    if(target.selected === true){
-        target.classList.add('selected')
-        target.classList.remove('unselected')
-    }
-}
-function hoverOutFn(e){
-    const target = e.currentTarget;
-    if(target.selected === true){
-        target.classList.remove('selected')
-    }
 }
 // handle file by type
 function handleFileByType(file,div){
@@ -350,6 +372,7 @@ function showDeleted(x){
 function isMacintosh(agent){
     return /macintosh?/ig.test(agent) ? true : false;
 }
+// check if client is using a windows device
 function isWindows(agent){
     return /Window?/ig.test(agent) ? true : false;
 }
@@ -370,13 +393,14 @@ function updateFileCounter(elements,num){
         return false;
     }
 }
+// disable element
 function disableElement(elements){
 return elements.forEach(x=>x.classList.add('no-pointer'))
 }
+// enable element
 function enableElement(elements){
 return elements.forEach(x=>x.classList.remove('no-pointer'))
 }
-
 // delete files fn
 function deleteFiles(files,elements,selectedFiles){
     // delete indication
@@ -395,10 +419,27 @@ function deleteFiles(files,elements,selectedFiles){
     return selectedFiles;
     
 }
+// clean up existing files
 function cleanUpExistingFiles(container){
     let existing_files = [...container.children]||null;
     if(existing_files) existing_files.map(file=>file.remove());
 }
+function hoverFn(e){
+    const target = e.currentTarget;
+    if(target.selected === true){
+        target.classList.add('selected')
+        target.classList.remove('unselected')
+    }
+}
+function hoverOutFn(e){
+    const target = e.currentTarget;
+    if(target.selected === true){
+        target.classList.remove('selected')
+    }
+}
+
+
+//________________________________
 // window events
 
 // resize
@@ -410,6 +451,11 @@ window.onresize = e => {
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
 }
 window.onkeydown = e => {
+    // if there is at least 2 file present
+    if(document.querySelectorAll('.file-obj-div').length > 1){
+        tools.forEach(tool=> {
+        tool.classList.add('disabled-tool');
+        })
     if(/Shift/.test(e.key)){
         isShift = true;
         shift.classList.remove('disabled-tool')
@@ -434,9 +480,13 @@ window.onkeydown = e => {
             caps.src = './media/caps-tool-green.png'
         }
     }
+    }
+    
 }
 window.onkeyup = e => {
-    if(/Shift/.test(e.key)){
+    // if there is at least 2 file present
+    if(document.querySelectorAll('.file-obj-div').length > 1){
+        if(/Shift/.test(e.key)){
         isShift = false;
         shift.classList.add('disabled-tool')
     }
@@ -450,12 +500,12 @@ window.onkeyup = e => {
     }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
-        console.log(state)
         if(!state){
             caps.src = './media/caps-tool.png'
             caps.classList.add('no-pointer');
         }
     }
+    }  
 }
 window.onload = e => {
     // get the device type
