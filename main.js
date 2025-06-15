@@ -1,7 +1,6 @@
 // variables
 const filecontainer = document.getElementById('file-container')
 const header = document.getElementById('header-mast')
-const select_counter = document.querySelector('.select-counter')
 const garbage = document.getElementById('garbage-img-tool');
 const caps = document.getElementById('caps-img-tool')
 const shift = document.getElementById('shift-img-tool')
@@ -16,6 +15,7 @@ const fileobj = new Object({
     },
     imgcontainer:document.getElementById('file-hold-container'),
 })
+const select_counter = document.querySelector('.select-counter')
 
 
 //________________________________
@@ -121,7 +121,7 @@ function fileSystemChange(e){
     // if files exist
     if(files.length > 0){
         // shift upload button down
-        fileobj.buttons.img.style.top =((filecontainer.clientHeight-100)) + "px"
+        fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
         container.classList.remove('hidden')
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
@@ -453,6 +453,10 @@ window.onresize = e => {
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
+
+    // if screenwidth is mobile size
+    dealWithSelectCounterBySize(window,select_counter)
+
 }
 let selectall = []
 window.onkeydown = e => {
@@ -546,5 +550,18 @@ window.onload = e => {
     // if device is windows
     if(isWindows(agent)){
         command.classList.add('hidden');
+    }
+}
+
+function dealWithSelectCounterBySize(window,counter){
+    let count_select = counter;
+
+    if(window.innerWidth <= 900){
+    count_select.textContent = count_select.textContent.replace(/ected/g,'')
+    } else {
+        let first = count_select.textContent.split`:`[0], last = count_select.textContent.split`:`[1]
+        first = 'S`elected';
+
+        !/selected/g.test(count_select.textContent) ? count_select.textContent = first+": "+last : null;
     }
 }

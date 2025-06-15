@@ -88,6 +88,9 @@ left:0;
     align-items: center;
     justify-content: start;
     height:500px;
+    overflow: hidden;
+    border-bottom:.25rem solid #333;
+    overflow-y:scroll;
     gap:unset;
     margin-top:40px;
     /* border:2px solid rgb(24, 194, 75); */
@@ -113,7 +116,7 @@ left:0;
 #upload-img{
     transition: .7s;
     position:absolute;
-    width:140px;
+    width:120px;
 
 }
 /* #upload-img-tool{
@@ -187,7 +190,7 @@ transition:.25s;
 .file-obj-div{
     z-index: 999;
     width:100%;
-    height:25px;
+    min-height:32px;
     border-bottom:.5px solid #000;
 }
 .unselected{
@@ -225,6 +228,8 @@ transition:.25s;
     #file-hold-container{
         margin-top:50.25px;
     }
+
+    
 
 }
 
