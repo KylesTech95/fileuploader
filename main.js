@@ -480,6 +480,9 @@ window.onkeydown = e => {
     if(/(Delete|Backspace)/i.test(e.key) && !garbage.classList.contains('no-pointer')){
         garbage.click();
         console.log('garbage - remote click')
+        isShift = false;
+        isMeta = false;
+        isCtl = false;
     }
 
     // select all items

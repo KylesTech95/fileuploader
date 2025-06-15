@@ -103,6 +103,7 @@ left:0;
     min-height:800px;
     height:100%;
     border:2px solid #000;
+    border-bottom: 37px solid #000;
     overflow:hidden;
     display:flex;
     flex-direction: column;
@@ -169,7 +170,7 @@ transition:.25s;
     flex-direction: row;
     align-items:center;
     justify-content:start;
-    gap:1rem;
+    /* gap:1rem; */
     width:100%;
     /* border:2px solid red; */
 }
@@ -179,6 +180,7 @@ transition:.25s;
     margin-right:1rem;
 }
 #file-options-container > li.file-list-item{
+    margin-left:8px;
     color:#fff;
 }
 
