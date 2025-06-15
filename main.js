@@ -52,15 +52,15 @@ garbage.onclick = e => {
 }
 
 // iterate through tools
-let tools = [caps,ctrl,shift,command,stopper]
+let tools = [ctrl,shift,command,stopper]
 tools.forEach(t=>{
     t.onclick = e => {
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length > 1){
+    if(document.querySelectorAll('.file-obj-div').length >= 1){
         isShift = false;
         isMeta = false;
         isCtl = false;
-        
+
         const item = e.currentTarget
         tools.forEach(tool=> {
         tool.classList.add('disabled-tool');
@@ -72,7 +72,7 @@ tools.forEach(t=>{
         }
         handleTool(item)
     }
-}   
+}
 })
 
 
@@ -83,7 +83,7 @@ function handleTool(tool){
     if(!/stop/i.test(id)){
         stopper.classList.remove('disabled-tool')
     }
-    // console.log(id)  
+    // console.log(id)
     switch(true){
     case /ctrl/i.test(id):
         isCtl = true;
@@ -106,7 +106,7 @@ function handleTool(tool){
     break;
     }
 }
-// getFiles 
+// getFiles
 function getFiles(system){
 return !system ? console.error('file system is undefined.\nCheck and try again') : system.click();
 }
@@ -114,12 +114,12 @@ return !system ? console.error('file system is undefined.\nCheck and try again')
 function fileSystemChange(e){
     let files = e.currentTarget.files || undefined;
     let container = fileobj.imgcontainer
-    
+
     // cleanup leftover files
     // cleanUpExistingFiles(container)
 
     // if files exist
-    if(files.length > 0){ 
+    if(files.length > 0){
         // shift upload button down
         fileobj.buttons.img.style.top =((filecontainer.clientHeight-100)) + "px"
         container.classList.remove('hidden')
@@ -132,7 +132,7 @@ function fileSystemChange(e){
             unselectEntity(div)
             div = handleFileByType(currfile,div) // return div and store in div
             container.appendChild(div) // append div to container
-            // if getMedia file === currfile
+            // if getMedia file === currfile`
             if(div.getMedia === currfile){
                 // select files
                 div.onclick = handleFileSelection
@@ -140,16 +140,16 @@ function fileSystemChange(e){
                 // div.onmouseout = hoverOutFn
             }
         }
-        
+
     } else {
         container.classList.add('hidden')
-    } 
+    }
 }
 // handle file by type
 function handleFileByType(file,div){
     const type = file.type;
     let type_pre = type.split`/`[0];
-    // create object property for the general type 
+    // create object property for the general type
     file.genType = type_pre;
     // main.js:73 image/jpeg
     // main.js:73 image/png
@@ -180,7 +180,7 @@ function handleFileByType(file,div){
         if(/bmp/gi.test(type)){
             // console.log('this is a bmp file')
         }
-        
+
         break;
         case /video/gi.test(type):
         file.element = document.createElement('video')
@@ -204,7 +204,7 @@ function handleFileByType(file,div){
         break;
         case /audio/gi.test(type):
         file.element = document.createElement('audio')
-            // method 
+            // method
         if(/ogg/gi.test(type)){
             // console.log('this is a ogg file')
         }
@@ -239,7 +239,7 @@ function handleFileSelection(e){
 
     // the listing's selected status will toggle
     listing.selected = !listing.selected;
-    
+
     // single file selection
     if(isShift === false && isCtl === false && isMeta === false) {
         // console.log('button is not pressed')
@@ -250,14 +250,14 @@ function handleFileSelection(e){
         selectedFiles = handleMultiSelection(children,listing,selectedFiles)
     }
     // console.log(selectedFiles)
-    
+
     // update filecounter
     updateFileCounter([select_counter,garbage],selectedFiles.length)
 
-    
+
 }
 // handle single selection
-function handleSingleSelection(children,target,arr){ 
+function handleSingleSelection(children,target,arr){
     arr = []; // reset arr
     // if target exists
     if(target && children.includes(target)){
@@ -267,7 +267,7 @@ function handleSingleSelection(children,target,arr){
             unselectEntity(x)
             x.selected = false;
     })
-    
+
         if(target.selected === true){
             selectEntity(target)
             arr.push(target)
@@ -280,30 +280,33 @@ function handleSingleSelection(children,target,arr){
     return arr; // return selected file
 }
 // handle multi selection
-function handleMultiSelection(children,target,arr){ 
+function handleMultiSelection(children,target,arr){
     // if target exists
     if(target){
+        let start,end;
         if(isMeta === true || isCtl === true){
             if(target.selected===true){
                 selectEntity(target)
                 arr.indexOf(target)===-1 ? arr.push(target) : null;
-            } 
+            }
             if(target.selected===false){
                 // console.log('target is false')
                 unselectEntity(target)
                 arr.splice(arr.indexOf(target),1)
             }
-        } 
+                start = arr[arr.length-1]
+                console.log(start)
+        }
         if(isShift===true){
-            let start,end;
             if(arr.length > 0){
                 // id start
-                start = arr[0]
+                console.log(start)
+                start = !start ? arr[arr.length-1] : start;
                 if(target.selected===true){
                     // id end
                     end = target
                     selectEntity(end)
-                    
+
                     for(let i = children.indexOf(start); i <= children.indexOf(end); i++){
                         // console.log(i)
                         // console.log(children[i]);
@@ -324,6 +327,7 @@ function handleMultiSelection(children,target,arr){
                             children[j].selected = true;
                         }
                     }
+                    start = end;
                 }
             } else {
                 console.log("Use Single Selection before using Shift")
@@ -335,7 +339,7 @@ function handleMultiSelection(children,target,arr){
             //         let childIdx = children.indexOf(child),
             //         st = children.indexOf(start),
             //         en = children.indexOf(end);
-            //         // if child is outside range 
+            //         // if child is outside range
             //         if((childIdx < st ||  childIdx > en) && arr.length > 1){
             //             // set child to false
             //             child.selected = false;
@@ -349,7 +353,7 @@ function handleMultiSelection(children,target,arr){
             //     }
             // })
         }
-    } 
+    }
     return arr; // return selected file
 }
 // select entity
@@ -417,7 +421,7 @@ function deleteFiles(files,elements,selectedFiles){
         fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
     }
     return selectedFiles;
-    
+
 }
 // clean up existing files
 function cleanUpExistingFiles(container){
@@ -444,15 +448,20 @@ function hoverOutFn(e){
 
 // resize
 window.onresize = e => {
-    // resize fileobj.buttons 
+    // resize fileobj.buttons
     if(document.querySelectorAll('.file-obj-div').length < 1){
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
 }
+let selectall = []
 window.onkeydown = e => {
+    selectall.push(e.key)
+    selectall = selectall.slice(-2)
+    console.log(selectall)
+    let allFiles = [...document.querySelectorAll('.file-obj-div')]
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length > 1){
+    if(document.querySelectorAll('.file-obj-div').length >= 1){
         tools.forEach(tool=> {
         tool.classList.add('disabled-tool');
         })
@@ -472,6 +481,21 @@ window.onkeydown = e => {
         garbage.click();
         console.log('garbage - remote click')
     }
+
+    // select all items
+    if(/meta/i.test(selectall[0]) && /a/i.test(selectall[1])){
+                console.log('something is happening heere')
+                e.preventDefault() // stop default action (highlight everything)
+                // select all files
+                allFiles.forEach((f,i)=>{
+                    console.log(f)
+                    f.selected = true;
+                    selectEntity(f);
+                })
+                selectedFiles = [...allFiles];
+                updateFileCounter([select_counter,garbage],selectedFiles.length)
+            }
+    }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
         console.log(state)
@@ -480,12 +504,10 @@ window.onkeydown = e => {
             caps.src = './media/caps-tool-green.png'
         }
     }
-    }
-    
 }
 window.onkeyup = e => {
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length > 1){
+    if(document.querySelectorAll('.file-obj-div').length >= 1){
         if(/Shift/.test(e.key)){
         isShift = false;
         shift.classList.add('disabled-tool')
@@ -498,6 +520,7 @@ window.onkeyup = e => {
         isMeta = false;
         command.classList.add('disabled-tool')
     }
+    }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
         if(!state){
@@ -505,7 +528,6 @@ window.onkeyup = e => {
             caps.classList.add('no-pointer');
         }
     }
-    }  
 }
 window.onload = e => {
     // get the device type

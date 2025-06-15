@@ -93,15 +93,7 @@ left:0;
     /* border:2px solid rgb(24, 194, 75); */
 }
 #file-container-header{
-    position:relative;
-    
-}
-#file-container-footer{
-position:absolute;
-bottom:0;
-width:100%;
-height:37px;
-background:#000;
+    position:relative; 
 }
 #file-container{
     background:#a99f9f;
@@ -214,5 +206,23 @@ transition:.25s;
     #upload-img{
         width:100px;
     }
+
+    #file-options{
+        height:51px;
+    }
+    #file-options-container{
+        /* border:2px solid red; */
+        align-items: end;
+    }
+
+    .btn-xsm{
+        width:26px;
+        transition:unset;
+    }
+
+    #file-hold-container{
+        margin-top:50.25px;
+    }
+
 }
 
