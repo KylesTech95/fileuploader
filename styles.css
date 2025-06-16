@@ -47,7 +47,7 @@ header>h1{
 #mv-bg2{
     background-blend-mode: multiply;
     background-color:#ffffff;
-    background-image: url('./media/bg1.jpg');
+    background-image: url('./media/bg2.jpg');
     animation:pulseScale 4.2s forwards infinite alternate; 
 }
 
@@ -202,10 +202,13 @@ transition:.25s;
     border-bottom:.5px solid #000;
 }
 .file-obj-tile{
-width:50px;
-height:50px;
-border:.5px solid #000;
+    width:50px;
+    height:50px;
+    border:.5px solid #000;
 }
+/* .file-obj-entity{
+    
+} */
 .unselected{
     background-color:var(--unselected);
 }

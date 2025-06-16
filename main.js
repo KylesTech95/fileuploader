@@ -43,7 +43,7 @@ fileobj.input.onchange = e => fileSystemChange(e)
 // garback onclick event
 garbage.onclick = e => {
     if(!e.currentTarget.classList.contains('no-pointer')){
-        let currSelectedFiles = [...document.querySelectorAll('.file-obj-tile')].filter(x=>x.selected===true);
+        let currSelectedFiles = [...document.querySelectorAll('.file-obj-entity')].filter(x=>x.selected===true);
 
         selectedFiles = deleteFiles(currSelectedFiles,[select_counter,e.currentTarget],selectedFiles)
     } else {
@@ -56,7 +56,7 @@ let tools = [ctrl,shift,command,stopper]
 tools.forEach(t=>{
     t.onclick = e => {
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-tile').length >= 1){
+    if(document.querySelectorAll('.file-obj-entity').length >= 1){
         isShift = false;
         isMeta = false;
         isCtl = false;
@@ -76,8 +76,32 @@ tools.forEach(t=>{
 })
 
 
+let views = [...document.querySelectorAll('.view-tool')];
+views.forEach(view=>{
+    view.onclick = e => {
+    switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget.id)
+}
+})
 //________________________________
 // functions
+
+function switchView(lis,type){
+    console.log(type)
+    type = type.split('-')[0];
+    console.log(type)
+
+    switch(true){
+        case type == 'list':
+        console.log('list view')
+        break;
+        case type == 'tile':
+        console.log('tile view')
+        break;
+        default:
+            console.log(undefined)
+    }
+}
+
 function handleTool(tool){
     let id = tool.id.split`-`[0]
     if(!/stop/i.test(id)){
@@ -123,15 +147,15 @@ function fileSystemChange(e){
         // shift upload button down
         fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
         container.classList.remove('hidden')
-        container.classList.remove('hold-col')
-        container.classList.add('hold-row')
+        // container.classList.remove('hold-col')
+        // container.classList.add('hold-row')
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
 
             // create a div to represent the file
             let li = document.createElement('li')
-            // li.classList.add('file-obj-tile')
-            li.classList.add('file-obj-tile')
+            li.classList.add('file-obj-div')
+            li.classList.add('file-obj-entity')
             unselectEntity(li)
             li = handleFileByType(currfile,li) // return div and store in div
             container.appendChild(li) // append div to container
@@ -417,7 +441,7 @@ function deleteFiles(files,elements,selectedFiles){
             selectedFiles = [];
             updateFileCounter(elements,selectedFiles.length)
     })
-    let getFilesNow = document.querySelectorAll('.file-obj-tile');
+    let getFilesNow = document.querySelectorAll('.file-obj-entity');
     if(getFilesNow.length < 1){
         console.log('no more files!')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
@@ -452,7 +476,7 @@ function hoverOutFn(e){
 // resize
 window.onresize = e => {
     // resize fileobj.buttons
-    if(document.querySelectorAll('.file-obj-tile').length >= 1){
+    if(document.querySelectorAll('.file-obj-entity').length >= 1){
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
@@ -467,9 +491,9 @@ window.onkeydown = e => {
         isShift = false;
         isMeta = false;
         isCtl = false;
-    let allFiles = [...document.querySelectorAll('.file-obj-tile')]
+    let allFiles = [...document.querySelectorAll('.file-obj-entity')]
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-tile').length >= 1){
+    if(document.querySelectorAll('.file-obj-entity').length >= 1){
         tools.forEach(tool=> {
         tool.classList.add('disabled-tool');
         })
@@ -515,9 +539,11 @@ window.onkeydown = e => {
     selectall = selectall.slice(-2);
 
     if(keyisdown==true && keyisdown1==true){
+            selectedFiles = [...allFiles];
             allFiles.forEach((f,idx)=>{
                 f.classList.add('selected')
                 selectEntity(f);
+                updateFileCounter([select_counter``,garbage],selectedFiles.length)
                 f.selected = true;
             })
         }
@@ -528,7 +554,7 @@ window.onkeyup = e => {
     keyisdown1 = false;
     keyisdown = false;
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-tile').length >= 1){
+    if(document.querySelectorAll('.file-obj-entity').length >= 1){
     if(/Shift/i.test(e.key)){
         isShift = false;
         shift.classList.add('disabled-tool')
@@ -594,3 +620,4 @@ function dealWithSelectCounterBySize(window,counter){
         !/selected/g.test(count_select.textContent) ? count_select.textContent = first+": "+last : null;
     }
 }
+
