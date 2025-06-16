@@ -104,6 +104,7 @@ left:0;
 #file-hold-container{
     display:flex; 
     height:100%;
+    max-height:675px;
     padding-bottom:1rem;
     overflow: hidden;
     overflow-y:scroll;
@@ -114,6 +115,7 @@ left:0;
     padding:.25rem;
     /* border:2px solid rgb(24, 194, 75); */
 }
+
 #file-container-header{
     position:relative; 
 }
@@ -230,6 +232,9 @@ z-index:999;
 .selected{
     background-color:var(--selected);
 }
+.file-obj-entity:active{
+    background-color:var(--selected);
+}
 .file-obj-entity:hover{
        cursor:pointer;
        background-color:var(--hovered);
@@ -258,9 +263,14 @@ z-index:999;
 
     #file-hold-container{
         margin-top:82.25px;
-        max-height:475px;
+        /* max-height:475px; */
         /* bordeR:2px solid red; */
     }
+
+    .file-obj-entity:hover{
+       cursor:pointer;
+       background-color:var(--selected);
+}
 
 }
 
@@ -279,7 +289,6 @@ z-index:999;
 #file-info{
     width:100%;
     height:37px;
-    display:flex;
     /* border:2px solid red; */
     background:#000;
     z-index:999;

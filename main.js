@@ -177,7 +177,6 @@ function fileSystemChange(e){
     let files = e.currentTarget.files || undefined;
     let container = fileobj.imgcontainer
 
-    fileinfo.classList.remove('hidden')
     // cleanup leftover files
     // cleanUpExistingFiles(container)
 
@@ -185,10 +184,9 @@ function fileSystemChange(e){
     if(files.length > 0){
         let objtypes = list_item.type;
         // shift upload button down
-        fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
-        container.classList.remove('hidden')
-        // container.classList.remove('hold-col')
-        // container.classList.add('hold-row')
+        fileobj.buttons.img.classList.add('hidden')
+        fileinfo.classList.remove('hidden')
+        container.classList.remove('hidden');
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
 
@@ -217,7 +215,6 @@ function fileSystemChange(e){
                 // li.onmouseout = hoverOutFn
             }
         }
-
     } else {
         container.classList.add('hidden')
     }
