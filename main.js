@@ -7,11 +7,13 @@ const shift = document.getElementById('shift-img-tool')
 const ctrl = document.getElementById('ctrl-img-tool')
 const command = document.getElementById('command-img-tool')
 const stopper = document.getElementById('stop-img-tool')
+const fileinfo = document.getElementById('file-info');
 const fileobj = new Object({
     input:document.getElementById('file-id'),
     buttons:{
         img:document.getElementById('upload-img'),
-        tool:document.getElementById('upload-img-tool')
+        tool:document.getElementById('upload-img-tool'),
+        footer:document.querySelector('.footer-img')
     },
     imgcontainer:document.getElementById('file-hold-container'),
 })
@@ -47,6 +49,14 @@ fileobj.input.onchange = e => fileSystemChange(e)
 
 // garback onclick event
 garbage.onclick = e => {
+    isShift = false;
+    isCtl = false;
+    isMeta = false;
+    
+    tools.forEach(tool=> {
+        tool.classList.add('disabled-tool');
+    })
+
     if(!e.currentTarget.classList.contains('no-pointer')){
         let currSelectedFiles = [...document.querySelectorAll('.file-obj-entity')].filter(x=>x.selected===true);
 
@@ -167,6 +177,7 @@ function fileSystemChange(e){
     let files = e.currentTarget.files || undefined;
     let container = fileobj.imgcontainer
 
+    fileinfo.classList.remove('hidden')
     // cleanup leftover files
     // cleanUpExistingFiles(container)
 
@@ -482,6 +493,7 @@ function deleteFiles(files,elements,selectedFiles){
     })
     let getFilesNow = document.querySelectorAll('.file-obj-entity');
     if(getFilesNow.length < 1){
+        fileinfo.classList.add('hidden')
         console.log('no more files!')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
         fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
@@ -516,6 +528,7 @@ function hoverOutFn(e){
 window.onresize = e => {
     // resize fileobj.buttons
     if(document.querySelectorAll('.file-obj-entity').length >= 1){
+        console.log('files exist so button should stay')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
