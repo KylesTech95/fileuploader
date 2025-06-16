@@ -89,7 +89,8 @@ left:0;
     justify-content: start;
     height:500px;
     overflow: hidden;
-    border-bottom:.25rem solid #333;
+    /* border-bottom:.25rem solid #333; */
+    box-shadow: 0 .5rem 16px .4px #333;
     overflow-y:scroll;
     gap:unset;
     margin-top:40px;

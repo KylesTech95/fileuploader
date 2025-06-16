@@ -459,10 +459,11 @@ window.onresize = e => {
 
 }
 let selectall = []
+let [keyisdown,keyisdown1] = [false,false]
 window.onkeydown = e => {
-    selectall.push(e.key)
-    selectall = selectall.slice(-2)
-    console.log(selectall)
+        isShift = false;
+        isMeta = false;
+        isCtl = false;
     let allFiles = [...document.querySelectorAll('.file-obj-div')]
     // if there is at least 2 file present
     if(document.querySelectorAll('.file-obj-div').length >= 1){
@@ -487,21 +488,7 @@ window.onkeydown = e => {
         isShift = false;
         isMeta = false;
         isCtl = false;
-    }
-
-    // select all items
-    if(/meta/i.test(selectall[0]) && /a/i.test(selectall[1])){
-                console.log('something is happening heere')
-                e.preventDefault() // stop default action (highlight everything)
-                // select all files
-                allFiles.forEach((f,i)=>{
-                    console.log(f)
-                    f.selected = true;
-                    selectEntity(f);
-                })
-                selectedFiles = [...allFiles];
-                updateFileCounter([select_counter,garbage],selectedFiles.length)
-            }
+    }        
     }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
@@ -511,19 +498,46 @@ window.onkeydown = e => {
             caps.src = './media/caps-tool-green.png'
         }
     }
+
+    // ctrl + a
+    if(/(Meta|Control)/i.test(e.key)){
+        keyisdown = true;
+        console.log(selectall)
+        selectall.push(e.key);
+    }
+    if(/^a$/i.test(e.key) && keyisdown === true){
+        keyisdown1 = true;
+        selectall.push(e.key);
+    }
+    selectall = selectall.slice(-2);
+
+    if(keyisdown==true && keyisdown1==true){
+            allFiles.forEach((f,idx)=>{
+                f.classList.add('selected')
+                selectEntity(f);
+                f.selected = true;
+            })
+        }
+        // console.log(keyisdown)
+        // console.log(keyisdown1)
 }
 window.onkeyup = e => {
+    keyisdown1 = false;
+    keyisdown = false;
     // if there is at least 2 file present
     if(document.querySelectorAll('.file-obj-div').length >= 1){
-        if(/Shift/.test(e.key)){
+    if(/Shift/i.test(e.key)){
         isShift = false;
         shift.classList.add('disabled-tool')
     }
-    if(/Control/.test(e.key)){
+    if(/(Meta|Control)/i.test(e.key)){
         isCtl = false;
-        ctrl.classList.add('disabled-tool')
+        ctrl.classList.add('disabled-tool');
     }
-    if(/Meta/.test(e.key) && isMacintosh){
+    // if(/^a$/i.test(e.key)){
+    //     keyisdown1 = false;
+    // }
+    if(/Meta/i.test(e.key) && isMacintosh){
         isMeta = false;
         command.classList.add('disabled-tool')
     }
@@ -535,6 +549,18 @@ window.onkeyup = e => {
             caps.classList.add('no-pointer');
         }
     }
+
+    if(keyisdown==false && keyisdown1 == false)
+    {
+        document.body.classList.remove('hidden')
+    }
+
+    // console.log(keyisdown)
+    // console.log(keyisdown1)
+
+    // if(keyisdown==false && keyisdown1==false){
+    //         document.body.classList.remove('hidden')
+    //     }
 }
 window.onload = e => {
     // get the device type
@@ -560,7 +586,7 @@ function dealWithSelectCounterBySize(window,counter){
     count_select.textContent = count_select.textContent.replace(/ected/g,'')
     } else {
         let first = count_select.textContent.split`:`[0], last = count_select.textContent.split`:`[1]
-        first = 'S`elected';
+        first = 'Selected';
 
         !/selected/g.test(count_select.textContent) ? count_select.textContent = first+": "+last : null;
     }
