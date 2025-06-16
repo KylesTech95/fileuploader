@@ -43,7 +43,7 @@ fileobj.input.onchange = e => fileSystemChange(e)
 // garback onclick event
 garbage.onclick = e => {
     if(!e.currentTarget.classList.contains('no-pointer')){
-        let currSelectedFiles = [...document.querySelectorAll('.file-obj-div')].filter(x=>x.selected===true);
+        let currSelectedFiles = [...document.querySelectorAll('.file-obj-tile')].filter(x=>x.selected===true);
 
         selectedFiles = deleteFiles(currSelectedFiles,[select_counter,e.currentTarget],selectedFiles)
     } else {
@@ -56,7 +56,7 @@ let tools = [ctrl,shift,command,stopper]
 tools.forEach(t=>{
     t.onclick = e => {
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length >= 1){
+    if(document.querySelectorAll('.file-obj-tile').length >= 1){
         isShift = false;
         isMeta = false;
         isCtl = false;
@@ -123,24 +123,24 @@ function fileSystemChange(e){
         // shift upload button down
         fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
         container.classList.remove('hidden')
-        // container.classList.remove('hold-col')
-        // container.classList.add('hold-row')
+        container.classList.remove('hold-col')
+        container.classList.add('hold-row')
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
 
             // create a div to represent the file
-            let div = document.createElement('div')
-            div.classList.add('file-obj-div')
-            // div.classList.add('file-obj-tile')
-            unselectEntity(div)
-            div = handleFileByType(currfile,div) // return div and store in div
-            container.appendChild(div) // append div to container
+            let li = document.createElement('li')
+            // li.classList.add('file-obj-tile')
+            li.classList.add('file-obj-tile')
+            unselectEntity(li)
+            li = handleFileByType(currfile,li) // return div and store in div
+            container.appendChild(li) // append div to container
             // if getMedia file === currfile
-            if(div.getMedia === currfile){
+            if(li.getMedia === currfile){
                 // select files
-                div.onclick = handleFileSelection
-                // div.onmouseover = hoverFn
-                // div.onmouseout = hoverOutFn
+                li.onclick = handleFileSelection
+                // li.onmouseover = hoverFn
+                // li.onmouseout = hoverOutFn
             }
         }
 
@@ -417,7 +417,7 @@ function deleteFiles(files,elements,selectedFiles){
             selectedFiles = [];
             updateFileCounter(elements,selectedFiles.length)
     })
-    let getFilesNow = document.querySelectorAll('.file-obj-div');
+    let getFilesNow = document.querySelectorAll('.file-obj-tile');
     if(getFilesNow.length < 1){
         console.log('no more files!')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
@@ -452,7 +452,7 @@ function hoverOutFn(e){
 // resize
 window.onresize = e => {
     // resize fileobj.buttons
-    if(document.querySelectorAll('.file-obj-div').length < 1){
+    if(document.querySelectorAll('.file-obj-tile').length >= 1){
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
@@ -467,9 +467,9 @@ window.onkeydown = e => {
         isShift = false;
         isMeta = false;
         isCtl = false;
-    let allFiles = [...document.querySelectorAll('.file-obj-div')]
+    let allFiles = [...document.querySelectorAll('.file-obj-tile')]
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length >= 1){
+    if(document.querySelectorAll('.file-obj-tile').length >= 1){
         tools.forEach(tool=> {
         tool.classList.add('disabled-tool');
         })
@@ -528,7 +528,7 @@ window.onkeyup = e => {
     keyisdown1 = false;
     keyisdown = false;
     // if there is at least 2 file present
-    if(document.querySelectorAll('.file-obj-div').length >= 1){
+    if(document.querySelectorAll('.file-obj-tile').length >= 1){
     if(/Shift/i.test(e.key)){
         isShift = false;
         shift.classList.add('disabled-tool')
