@@ -9,7 +9,15 @@
     box-sizing:border-box;
     list-style:none;
 }
-
+.noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Old versions of Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
 body{
     /* border:3px solid red; */
     width:100%;
@@ -193,10 +201,10 @@ transition:.25s;
     margin-left:8px;
     color:#fff;
 }
-.file-obj-div,.file-obj-tile{
+.file-obj-list,.file-obj-tile{
     z-index: 999;
 }
-.file-obj-div{
+.file-obj-list{
     width:100%;
     min-height:32px;
     border-bottom:.5px solid #000;
@@ -215,7 +223,7 @@ transition:.25s;
 .selected{
     background-color:var(--selected);
 }
-.file-obj-div:hover{
+.file-obj-entity:hover{
        cursor:pointer;
        background-color:var(--hovered);
 }

@@ -16,7 +16,12 @@ const fileobj = new Object({
     imgcontainer:document.getElementById('file-hold-container'),
 })
 const select_counter = document.querySelector('.select-counter')
-
+let list_item = {
+    type:{
+        list:true,
+        tile:false
+    }
+}
 
 //________________________________
 // set file upload icon to middle of screen
@@ -79,22 +84,45 @@ tools.forEach(t=>{
 let views = [...document.querySelectorAll('.view-tool')];
 views.forEach(view=>{
     view.onclick = e => {
-    switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget.id)
+        console.log(e.currentTarget)
+        views.forEach(v=>v.children[0].classList.add('disabled-tool'))
+        let viewchildren = [...e.currentTarget.children]
+        for(let i = 0; i < viewchildren.length; i++){
+            console.log(viewchildren[i])
+            viewchildren[i].classList.remove('disabled-tool')
+        }
+        switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget,document.getElementById('file-hold-container'))
 }
 })
 //________________________________
 // functions
 
-function switchView(lis,type){
-    console.log(type)
-    type = type.split('-')[0];
+function switchView(lis,target,container){
+    
+    let type = target.id.split('-')[0];
     console.log(type)
 
     switch(true){
         case type == 'list':
+        list_item.type.tile = false;
+        list_item.type.list = true;
         console.log('list view')
+        lis.forEach(li=>{
+            li.classList.remove('file-obj-tile')
+            li.classList.add('file-obj-list')
+        })
+        container.classList.add('hold-col')
+        container.classList.remove('hold-row')
         break;
         case type == 'tile':
+        list_item.type.list = false;
+        list_item.type.tile = true;
+        lis.forEach(li=>{
+            li.classList.add('file-obj-tile')
+            li.classList.remove('file-obj-list')
+        })
+        container.classList.remove('hold-col')
+        container.classList.add('hold-row')
         console.log('tile view')
         break;
         default:
@@ -144,6 +172,7 @@ function fileSystemChange(e){
 
     // if files exist
     if(files.length > 0){
+        let objtypes = list_item.type;
         // shift upload button down
         fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
         container.classList.remove('hidden')
@@ -154,7 +183,17 @@ function fileSystemChange(e){
 
             // create a div to represent the file
             let li = document.createElement('li')
-            li.classList.add('file-obj-div')
+            
+            // list or tile ? 
+            for(let prop in objtypes){
+                if(objtypes[prop]==true){
+                    console.log(prop)
+                    li.classList.add(`file-obj-${prop}`)
+                } else {
+                    li.classList.remove(`file-obj-${prop}`)
+                }
+            }
+
             li.classList.add('file-obj-entity')
             unselectEntity(li)
             li = handleFileByType(currfile,li) // return div and store in div
@@ -529,7 +568,6 @@ window.onkeydown = e => {
     // ctrl + a
     if(/(Meta|Control)/i.test(e.key)){
         keyisdown = true;
-        console.log(selectall)
         selectall.push(e.key);
     }
     if(/^a$/i.test(e.key) && keyisdown === true){
@@ -538,12 +576,13 @@ window.onkeydown = e => {
     }
     selectall = selectall.slice(-2);
 
-    if(keyisdown==true && keyisdown1==true){
+    if(keyisdown==true && keyisdown1==true && selectall[0]=='Meta'&&selectall[1]=='a'){
+            console.log(selectall)
             selectedFiles = [...allFiles];
             allFiles.forEach((f,idx)=>{
                 f.classList.add('selected')
                 selectEntity(f);
-                updateFileCounter([select_counter``,garbage],selectedFiles.length)
+                updateFileCounter([select_counter,garbage],selectedFiles.length)
                 f.selected = true;
             })
         }
