@@ -123,16 +123,19 @@ function fileSystemChange(e){
         // shift upload button down
         fileobj.buttons.img.style.top =((filecontainer.clientHeight-50)) + "px"
         container.classList.remove('hidden')
+        // container.classList.remove('hold-col')
+        // container.classList.add('hold-row')
         for(let i = 0; i < files.length; i++){ // iterate through files
             currfile = files[i]; // store file in variable
 
             // create a div to represent the file
             let div = document.createElement('div')
             div.classList.add('file-obj-div')
+            // div.classList.add('file-obj-tile')
             unselectEntity(div)
             div = handleFileByType(currfile,div) // return div and store in div
             container.appendChild(div) // append div to container
-            // if getMedia file === currfile`
+            // if getMedia file === currfile
             if(div.getMedia === currfile){
                 // select files
                 div.onclick = handleFileSelection
@@ -488,7 +491,7 @@ window.onkeydown = e => {
         isShift = false;
         isMeta = false;
         isCtl = false;
-    }        
+    }
     }
     if(/(capslock)/i.test(e.key)){
         let state = e.getModifierState(e.key);
