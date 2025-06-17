@@ -118,22 +118,39 @@ function switchView(lis,target,container){
         list_item.type.list = true;
         console.log('list view')
         lis.forEach(li=>{
+            let imgparent = [...li.children].find(x=>x.classList.contains('img-parent'));
+            let imgchild = imgparent.children[1];
+            let imgtext = imgparent.children[0]
+            // imgtext.remove()
+            // console.log(imgchild)
             li.classList.remove('file-obj-tile')
             li.classList.add('file-obj-list')
+            imgchild.classList.remove('file-icon-img-tile')
+            imgchild.classList.add('file-icon-img-list')
+            
         })
         container.classList.add('hold-col')
         container.classList.remove('hold-row')
+        container.classList.add('parent-list')
+        container.classList.remove('parent-tile')
         break;
+
+
         case type == 'tile':
         list_item.type.list = false;
         list_item.type.tile = true;
         lis.forEach(li=>{
+            let imgparent = [...li.children].find(x=>x.classList.contains('img-parent'));
+            let imgchild = imgparent.children[1];
+            // console.log(imgchild)
             li.classList.add('file-obj-tile')
             li.classList.remove('file-obj-list')
+            imgchild.classList.remove('file-icon-img-list')
+            imgchild.classList.add('file-icon-img-tile')
         })
-        // container.classList.remove('hold-col')
-        // container.classList.add('hold-row')
         console.log('tile view')
+        container.classList.remove('parent-list')
+        container.classList.add('parent-tile')
         break;
         default:
             console.log(undefined)
@@ -189,33 +206,45 @@ function fileSystemChange(e){
         fileinfo.classList.remove('hidden')
         container.classList.remove('hidden');
         for(let i = 0; i < files.length; i++){ // iterate through files
-            currfile = files[i]; // store file in variable
-
+            currfile = files[i]; // store file in variable            
             // create a div to represent the file
             let li = document.createElement('li')
             let img = {
                 file:document.createElement('img'),
                 folder:document.createElement('img'),
+                img_parent:document.createElement('a'),
+                filetype:currfile.type.split`/`[1].replace(/x-ms-/g,''),
+                p:document.createElement('p'),
             };
+            img.p.textContent = img.filetype;
             img.file.classList.add('file-icon-img');
             img.file.src = './media/file-img.png';
-            img.folder.classList.add('folder-icon-img');
-            img.folder.src = './media/folder.png';
-            li.appendChild(img.file)
-            li.appendChild(img.folder)
-            // console.log(files[i])
+            // img.folder.classList.add('folder-icon-img');
+            // img.folder.src = './media/folder.png';
+            li.classList.add('file-obj-entity')
+            img.p.classList.add('img-type')
+            img.img_parent.classList.add('img-parent')
+            img.img_parent.appendChild(img.p)
+            img.img_parent.appendChild(img.file)
+            li.appendChild(img.img_parent);
             
+            let imgparent = [...li.children].find(x=>x.classList.contains('img-parent'));
+            let imgchild = imgparent.children[1];
+            let imgtext = imgparent.children[0];
+
+        
             // list or tile ? 
             for(let prop in objtypes){
                 if(objtypes[prop]==true){
                     console.log(prop)
                     li.classList.add(`file-obj-${prop}`)
+                    imgchild.classList.add(`file-icon-img-${prop}`)
                 } else {
                     li.classList.remove(`file-obj-${prop}`)
+                    imgchild.classList.remove(`file-icon-img-${prop}`)
                 }
             }
 
-            li.classList.add('file-obj-entity')
             unselectEntity(li)
             li = handleFileByType(currfile,li) // return div and store in div
             container.appendChild(li) // append div to container
