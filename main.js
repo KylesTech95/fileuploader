@@ -131,8 +131,8 @@ function switchView(lis,target,container){
             li.classList.add('file-obj-tile')
             li.classList.remove('file-obj-list')
         })
-        container.classList.remove('hold-col')
-        container.classList.add('hold-row')
+        // container.classList.remove('hold-col')
+        // container.classList.add('hold-row')
         console.log('tile view')
         break;
         default:
@@ -174,6 +174,7 @@ return !system ? console.error('file system is undefined.\nCheck and try again')
 }
 // filesystem change
 function fileSystemChange(e){
+    
     let files = e.currentTarget.files || undefined;
     let container = fileobj.imgcontainer
 
@@ -192,6 +193,17 @@ function fileSystemChange(e){
 
             // create a div to represent the file
             let li = document.createElement('li')
+            let img = {
+                file:document.createElement('img'),
+                folder:document.createElement('img'),
+            };
+            img.file.classList.add('file-icon-img');
+            img.file.src = './media/file-img.png';
+            img.folder.classList.add('folder-icon-img');
+            img.folder.src = './media/folder.png';
+            li.appendChild(img.file)
+            li.appendChild(img.folder)
+            // console.log(files[i])
             
             // list or tile ? 
             for(let prop in objtypes){
