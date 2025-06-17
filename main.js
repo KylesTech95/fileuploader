@@ -111,7 +111,6 @@ function switchView(lis,target,container){
     
     let type = target.id.split('-')[0];
     console.log(type)
-
     switch(true){
         case type == 'list':
         list_item.type.tile = false;
@@ -148,6 +147,7 @@ function switchView(lis,target,container){
             imgchild.classList.remove('file-icon-img-list')
             imgchild.classList.add('file-icon-img-tile')
         })
+        container.classList.add('hold-col')
         console.log('tile view')
         container.classList.remove('parent-list')
         container.classList.add('parent-tile')
@@ -193,6 +193,7 @@ return !system ? console.error('file system is undefined.\nCheck and try again')
 function fileSystemChange(e){
     
     let files = e.currentTarget.files || undefined;
+    let element = e.currentTarget.element || undefined;
     let container = fileobj.imgcontainer
 
     // cleanup leftover files
@@ -213,12 +214,13 @@ function fileSystemChange(e){
                 file:document.createElement('img'),
                 folder:document.createElement('img'),
                 img_parent:document.createElement('a'),
-                filetype:currfile.type.split`/`[1].replace(/x-ms-/g,''),
+                filetype:currfile.type.split`/`[1].replace(/x-ms-/g,'').replace(/\+xml/g,''),
                 p:document.createElement('p'),
             };
-            img.p.textContent = img.filetype;
+            console.log(element)
+            img.p.textContent = currfile.name
             img.file.classList.add('file-icon-img');
-            img.file.src = './media/file-img.png';
+            img.file.src = `./media/${'file'}-img.png`; // file src
             // img.folder.classList.add('folder-icon-img');
             // img.folder.src = './media/folder.png';
             li.classList.add('file-obj-entity')
@@ -533,6 +535,7 @@ function deleteFiles(files,elements,selectedFiles){
     if(getFilesNow.length < 1){
         fileinfo.classList.add('hidden')
         console.log('no more files!')
+        fileobj.buttons.img.classList.remove('hidden')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
         fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
     }
