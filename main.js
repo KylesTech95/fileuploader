@@ -156,7 +156,6 @@ function switchView(lis,target,container){
             console.log(undefined)
     }
 }
-
 function handleTool(tool){
     let id = tool.id.split`-`[0]
     if(!/stop/i.test(id)){
@@ -566,6 +565,7 @@ function hoverOutFn(e){
 // window events
 
 // resize
+let selectall = []
 window.onresize = e => {
     // resize fileobj.buttons
     if(document.querySelectorAll('.file-obj-entity').length >= 1){
@@ -578,7 +578,6 @@ window.onresize = e => {
     dealWithSelectCounterBySize(window,select_counter)
 
 }
-let selectall = []
 let [keyisdown,keyisdown1] = [false,false]
 window.onkeydown = e => {
         isShift = false;
