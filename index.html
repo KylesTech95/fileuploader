@@ -7,8 +7,12 @@
   <title>File Uploader</title>
 </head>
 <body>
+  <!-- error notificaiton -->
+   <div id="notification-center" class="hide-notification">
+    <h4 id="notification-text" class="error-center"></h4>
+   </div>
    <!-- header -->
-      <header id="header-mast">
+      <header id="header-mast" class="noselect">
           <h1>File Uploader</h1>
       </header>
       <div id="mv-bg2" class="noselect bottom-0"></div>
@@ -64,6 +68,6 @@
           </ul>
           </div>
       </div>
-      <script src="./main.js"></script>
+      <script type="module" src="./main.js"></script>
   </body>
 </html>
