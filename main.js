@@ -147,8 +147,6 @@ function switchView(lis,target,container){
             imgchild.classList.remove('file-icon-img-list')
             imgchild.classList.add('file-icon-img-tile')
         })
-        container.classList.add('hold-col')
-        console.log('tile view')
         container.classList.remove('parent-list')
         container.classList.add('parent-tile')
         break;
@@ -199,8 +197,8 @@ function fileSystemChange(e){
     // cleanUpExistingFiles(container)
 
     // if files exist
-    const maxFiles = 10;
-    if(files.length > 0 && files.length < maxFiles){
+    const maxFiles = 9;
+    if((files.length > 0 && (files.length+document.querySelectorAll('.file-obj-entity').length) < maxFiles)){
         let objtypes = list_item.type;
         // shift upload button down
         fileobj.buttons.img.classList.add('hidden')
@@ -686,6 +684,7 @@ window.onkeyup = e => {
     //     }
 }
 window.onload = e => {
+    dealWithSelectCounterBySize(window,select_counter)
     // get the device type
     const agent = window.navigator.userAgent;
 
