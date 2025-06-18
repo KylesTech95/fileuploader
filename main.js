@@ -199,7 +199,8 @@ function fileSystemChange(e){
     // cleanUpExistingFiles(container)
 
     // if files exist
-    if(files.length > 0){
+    const maxFiles = 10;
+    if(files.length > 0 && files.length < maxFiles){
         let objtypes = list_item.type;
         // shift upload button down
         fileobj.buttons.img.classList.add('hidden')
@@ -258,7 +259,8 @@ function fileSystemChange(e){
             }
         }
     } else {
-        container.classList.add('hidden')
+        container.classList.add('hidden');
+        console.log('Sorry, but too many files have been uploaded')
     }
 }
 // handle file by type
@@ -617,7 +619,7 @@ window.onkeydown = e => {
             caps.src = './media/caps-tool-green.png'
         }
     }
-
+    console.log(e.key)
     // ctrl + a
     if(/(Meta|Control)/i.test(e.key)){
         keyisdown = true;
@@ -629,7 +631,7 @@ window.onkeydown = e => {
     }
     selectall = selectall.slice(-2);
 
-    if(keyisdown==true && keyisdown1==true && selectall[0]=='Meta'&&selectall[1]=='a'){
+    if(keyisdown==true && keyisdown1==true && /(Meta|Control)/i.test(selectall[0])&&selectall[1]=='a'){
             console.log(selectall)
             selectedFiles = [...allFiles];
             allFiles.forEach((f,idx)=>{
