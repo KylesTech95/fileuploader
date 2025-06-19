@@ -36,6 +36,9 @@ body{
 .open-scroll{
     width:100%;
 }
+.qt-trans-5{
+    transition:.5s;
+}
 .close-scroll{
     width:10px;
 }
@@ -47,7 +50,17 @@ border:.5px solid rgb(255, 255, 255);
 background:transparent;
 overflow:hidden;
 }
-
+#scroll-close{
+    color:#f00;
+    position:absolute;
+    right:8px;
+    top:1.75px;
+    font-size:12pt;
+}
+#scroll-close:hover{
+    z-index:999;
+    cursor:pointer;
+}
 #scrolltab{
 height:100%;
 width:20px;

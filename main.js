@@ -1,5 +1,5 @@
 import { fileobj, tools } from './lib/general.js'
-import { fileSystemChange, updateFileCounter, switchView, unselectEntity, selectEntity } from './lib/handleFiles.js';
+import { fileSystemChange, switchView, getFiles, deleteFiles } from './lib/handleFiles.js';
 // variables
 const filecontainer = document.getElementById('file-container')
 const header = document.getElementById('header-mast')
@@ -67,31 +67,6 @@ views.forEach(view=>{
         switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget,document.getElementById('file-hold-container'))
 }
 })
-
-// getFiles
-function getFiles(system){
-return !system ? console.error('file system is undefined.\nCheck and try again') : system.click();
-}
-// delete files fn
-function deleteFiles(files,elements,selectedFiles){
-    // delete indication
-    files.map(x=>{
-        unselectEntity(x);
-        files.forEach((a,b)=>a.remove());
-            selectedFiles = [];
-            updateFileCounter(elements,selectedFiles.length)
-    })
-    let getFilesNow = document.querySelectorAll('.file-obj-entity');
-    if(getFilesNow.length < 1){
-        fileinfo.classList.add('hidden')
-        console.log('no more files!')
-        fileobj.buttons.img.classList.remove('hidden')
-        fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
-        fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
-    }
-    return selectedFiles;
-
-}
 
 
 
