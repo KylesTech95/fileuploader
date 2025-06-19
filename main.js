@@ -48,11 +48,17 @@ garbage.onclick = e => {
     }
 }
 
-let views = [...document.querySelectorAll('.view-tool')];
+let views = [...document.querySelectorAll('.view-tool')]//.filter(y=>y.id!=='scroll-v');
 views.forEach(view=>{
     view.onclick = e => {
-        console.log(e.currentTarget)
-        views.forEach(v=>v.children[0].classList.add('disabled-tool'))
+        views.forEach(v=>{
+            if(v.id!=='scroll-v'){
+                v.children[0].classList.add('disabled-tool')
+            }
+            if(e.currentTarget.id=='scroll-v'){
+                console.log('test pass on target');
+            }
+        })
         let viewchildren = [...e.currentTarget.children]
         for(let i = 0; i < viewchildren.length; i++){
             console.log(viewchildren[i])
@@ -61,7 +67,6 @@ views.forEach(view=>{
         switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget,document.getElementById('file-hold-container'))
 }
 })
-
 
 // getFiles
 function getFiles(system){

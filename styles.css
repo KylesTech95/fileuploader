@@ -29,6 +29,35 @@ body{
     align-items: center;
     justify-content: start;
 }
+.view-scrollbar{
+    width:200px;
+    /* border:2px solid blue; */
+}
+.open-scroll{
+    width:100%;
+}
+.close-scroll{
+    width:10px;
+}
+#scrollbar{
+transition:.5s;
+position:relative;
+height:20px;
+border:.5px solid rgb(255, 255, 255);
+background:transparent;
+overflow:hidden;
+}
+
+#scrolltab{
+height:100%;
+width:20px;
+background:yellow;
+position:absolute;
+top:0;
+}
+#scrolltab:hoveR{
+    cursor:grab;
+}
 #mv-bg1,#mv-bg2{
     position:absolute;
     background-repeat: no-repeat;
@@ -314,8 +343,10 @@ z-index:999;
     border-top:.25px solid #fff;
     background:#000;
     padding:8px 0 0 8px;
+    border:2px solid green;
     justify-content: start;
     align-items: center;
+    gap:6px;
 }
 
 #file-info{
