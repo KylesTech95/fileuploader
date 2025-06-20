@@ -381,6 +381,10 @@ z-index:999;
         /* max-height:475px; */
         /* border:2px solid red; */
     }
+    .file-obj-tile{
+        max-width:200px;
+        min-width:150px;
+    }
 }
 
 
