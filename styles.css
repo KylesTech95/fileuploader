@@ -55,7 +55,7 @@ body{
     /* margin-left:22px; */
 }
 #scroll-hr:active{
-    background:purple;
+    background:rgb(220, 228, 131);
 }
 #scroll-hr:hover{
     cursor:pointer;
