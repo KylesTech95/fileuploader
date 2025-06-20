@@ -45,13 +45,31 @@ body{
 }
 #scroll-hr{
     width:92%;
-    height:1.25px;
+    height:4px;
+    border-radius: 20px;
     background:rgb(255, 255, 255);
     border:none;
     position:absolute;
     top:50%;
+    
     /* margin-left:22px; */
 }
+#scroll-hr:active{
+    background:purple;
+}
+#scroll-hr:hover{
+    cursor:pointer;
+    /* animation:pulseHr .33s infinite alternate forwards; */
+}
+/* 
+@keyframes pulseHr {
+    from{
+        box-shadow:unset;
+    }
+    to{
+        box-shadow: 0 0 5px .3px #fff;
+    }
+} */
 #scrollbar{
 transition:.5s;
 position:relative;
@@ -139,6 +157,9 @@ left:0;
 /* hide element */
 .hidden{
     display:none;
+}
+.passive-hidden{
+    opacity:0;
 }
 .hold-col{
     flex-direction: column;
