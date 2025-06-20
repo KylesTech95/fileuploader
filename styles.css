@@ -44,13 +44,13 @@ body{
     width:20px;
 }
 #scroll-hr{
-    width:85%;
+    width:92%;
     height:1.25px;
     background:rgb(255, 255, 255);
     border:none;
     position:absolute;
     top:50%;
-    margin-left:22px;
+    /* margin-left:22px; */
 }
 #scrollbar{
 transition:.5s;
@@ -63,7 +63,7 @@ overflow:hidden;
 #scroll-close{
     color:#f00;
     position:absolute;
-    right:0px;
+    right:-5px;
     top:1.75px;
     font-size:13pt;
 }
@@ -74,7 +74,7 @@ overflow:hidden;
 #scrolltab{
 height:100%;
 width:20px;
-background:rgba(53, 152, 227, 0.762);
+background:rgba(53, 152, 227, 1);
 position:absolute;
 top:0;
 }
@@ -107,7 +107,6 @@ header>h1{
 #mv-bg2{
     background-blend-mode: multiply;
     background-color:#ffffff;
-    background-image: url('./media/bg2.jpg');
     animation:pulseScale 4.2s forwards infinite alternate; 
 }
 
@@ -368,7 +367,7 @@ z-index:999;
 }
 
 }
-@media screen and (max-width:570px){
+@media screen and (max-width:625px){
     .hold-row{
         /* flex-direction: column; */
         justify-content: center;
@@ -380,6 +379,21 @@ z-index:999;
         grid-template-columns: 1fr 1fr;
         /* max-height:475px; */
         /* border:2px solid red; */
+    }
+    .file-obj-tile{
+        max-width:200px;
+        min-width:150px;
+    }
+}
+@media screen and (max-width:498px){
+    .hold-row{
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+    }
+    #file-hold-container{
+        margin-top:12.25px;
+        display:flex;
     }
     .file-obj-tile{
         max-width:200px;
@@ -399,6 +413,12 @@ z-index:999;
     justify-content: start;
     align-items: center;
     gap:6px;
+}
+.garbage-clone{
+    position:absolute;
+    top:50%;
+    left:25px;
+    z-index:999;
 }
 
 #file-info{
