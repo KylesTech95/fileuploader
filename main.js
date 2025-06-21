@@ -42,9 +42,12 @@ garbage.onclick = e => {
             tools.forEach(tool=> {
                 tool.classList.add('disabled-tool');
             })
+            console.log(tools)
 
+            // if garbage is enabled
             if(!e.currentTarget.classList.contains('no-pointer')){
                 let currSelectedFiles = [...document.querySelectorAll('.file-obj-entity')].filter(x=>x.selected===true);
+                    console.log(garbage_clone)
                     selectedFiles = deleteFiles(currSelectedFiles,[select_counter,e.currentTarget,garbage_clone],selectedFiles)
             } else {
                 console.log('garbage is disabled!')

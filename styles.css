@@ -281,7 +281,7 @@ z-index:999;
     color:#fff;
 }
 .file-obj-list,.file-obj-tile{
-    z-index: 999;
+    z-index: 998;
 }
 .file-obj-list{
     width:100%;
@@ -407,6 +407,9 @@ z-index:999;
     }
 }
 @media screen and (max-width:498px){
+    .garbage-clone{
+        transform:translate(-12px,0)
+    }
     .hold-row{
         flex-direction: column;
         justify-content: start;
@@ -438,7 +441,7 @@ z-index:999;
 .garbage-clone{
     position:absolute;
     top:50%;
-    left:25px;
+    left:28px;
     z-index:999;
 }
 
