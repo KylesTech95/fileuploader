@@ -52,22 +52,19 @@ garbage.onclick = e => {
             } else {
                 console.log('garbage is disabled!')
             }
-    }
+}
 
 // handle each view
 views.forEach(view=>{
     view.onclick = e => {
         views.forEach(v=>{
-            if(v.id!=='scroll-v'){
+            if(!/scroll(bar|tab|-v)/gi.test(e.currentTarget.id) && !/scroll(bar|tab|-v)/gi.test(v.id)){
                 v.children[0].classList.add('disabled-tool')
-            }
-            if(e.currentTarget.id=='scroll-v'){
-                console.log('test pass on target');
             }
         })
         let viewchildren = [...e.currentTarget.children]
         for(let i = 0; i < viewchildren.length; i++){
-            console.log(viewchildren[i])
+            // console.log(viewchildren[i])
             viewchildren[i].classList.remove('disabled-tool')
         }
         switchView(document.querySelectorAll('.file-obj-entity'),e.currentTarget,document.getElementById('file-hold-container'))
