@@ -25,7 +25,7 @@ async function convert(directory,input,output,outDir,options={height:undefined,w
     const fileLen = checkSameFileName(outDir,fs,output).len;
     const files = checkSameFileName(outDir,fs,output).files
 
-    console.log(files)
+    // console.log(files)
     if(sameFile){
         let split = output.split('.');
         split[0]+=(fileLen);
@@ -51,7 +51,7 @@ function checkSameFileName(directory,{readdirSync} = require('fs'),filename){
     // gather information from same files
     const len = locateFiles.length;
     const filenames = [...locateFiles]
-    console.log("filenames: "+filenames)
+    // console.log("filenames: "+filenames)
     filenames.length < 1 ? result = false : result = true;
     console.log("bool: "+result)
     // return object

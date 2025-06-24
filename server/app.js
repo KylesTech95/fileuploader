@@ -9,6 +9,7 @@ const path = require('path')
 const app = express();
 let interval, speed = 250;
 const cors = require('cors')
+const [input,output] = ['input','output']
 
 
 
@@ -28,15 +29,34 @@ app.route('/test').get((req,res)=>{
 // app.get('/endpoint', function(req,res){
 //})
 
+// upload to input dir
+app.route('/upload').post((req,res)=>{
+    const {files} = req.body // array
+    console.log(files)
+
+    try{
+        if(files.length>0){
+            // readfile
+            files.forEach((file,index)=>{
+               let readfile = fs.readFileSync('./media/'+file,'utf-8');
+               let writefile = fs.writeFileSync(path.resolve(__dirname,input),readfile,'utf-8');
+
+            })
+            res.json({data:'file upload complete'})
+    }
+    }
+    catch(err){
+        throw new Error(err)
+    }
+})
 // convert (get)
 app.route('/convert').get(async(req,res)=>{
-    const {input,output,ext} = req.query // inbin, outbin, input-files
+    const {ext} = req.query // inbin, outbin, input-files
     const dirFromConversion = '..', inbin = `${dirFromConversion}/${input}`, outbin = `${dirFromConversion}/${output}` // bins for input and output
     // console.log(req.query)
     // console.log(inbin)
     // console.log(outbin)
     console.log(ext)
-
     const files = [...fs.readdirSync(path.resolve(__dirname,input),'utf-8')]
     // console.log(files) 
     try{
@@ -52,25 +72,43 @@ app.route('/convert').get(async(req,res)=>{
             }
           
         }
-
         
         res.send('File Conversion Complete')
     }
     catch(err){
-        running = false; // clear the loop
+        
         throw new Error(err)
     }
 })
 
-
 // convert (post)
 // app.route('/convert').post(async(req,res)=>{
-//      const {files} = req.body;
+//     const {ext} = req.body // inbin, outbin, input-files
+//     const dirFromConversion = '..', inbin = `${dirFromConversion}/${input}`, outbin = `${dirFromConversion}/${output}` // bins for input and output
+//     // console.log(req.query)
+//     // console.log(inbin)
+//     // console.log(outbin)
+//     console.log(ext)
+//     const files = [...fs.readdirSync(path.resolve(__dirname,input),'utf-8')]
+//     console.log(files) 
 //     try{
-//         convert('../input','input.jpg','output.gif','../output');
+//         if(files && files.length>0){
+
+//             for(let i = 0; i < files.length; i++){
+//                 let inpFileName = files[i].split('.')[0];
+//                 // while loop
+//                 console.log('Conversion #' + (i+1))
+//                 convert(inbin,files[i],`${inpFileName}.${ext}`,outbin); // jpg to png
+//                 // convert(input,files[i],output,{height:256,width:300}); // jpg to png
+//                 // clear the loop
+//             }
+          
+//         }
+        
 //         res.send('File Conversion Complete')
 //     }
 //     catch(err){
+        
 //         throw new Error(err)
 //     }
 // })
