@@ -1,0 +1,28 @@
+{
+  "name": "fileupload",
+  "version": "1.0.0",
+  "main": "server/app.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon server/app.js",
+    "start": "node server/app.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^5.1.0",
+    "ffmpeg": "^0.0.4",
+    "jimp": "^1.6.0",
+    "sharp": "^0.34.2"
+  },
+  "dependencies": {
+    "@redis/client": "^5.5.6"
+  }
+}
