@@ -7,13 +7,14 @@ const express = require('express')
 const port = process.env.PORT2||3300;
 const path = require('path')
 const app = express();
-let interval, speed = 250;
 const cors = require('cors')
+const fileupload = require('express-fileupload');
+let interval, speed = 100;
 const [input,output] = ['input','output']
 
 
 
-
+app.use(fileupload());
 app.use(express.static(path.join(__dirname,'../'))) // static directory (public)
 app.use(express.json())
 app.use(cors())
@@ -29,26 +30,38 @@ app.route('/test').get((req,res)=>{
 // app.get('/endpoint', function(req,res){
 //})
 
-// upload to input dir
+// upload files (single/multi)
 app.route('/upload').post((req,res)=>{
-    const {files} = req.body // array
-    console.log(files)
-
+    const {image} = req.files // array
+    console.log(image)
+    let folderType;
     try{
-        if(files.length>0){
+        if(image.length>0){
             // readfile
-            files.forEach((file,index)=>{
-               let readfile = fs.readFileSync('./media/'+file,'utf-8');
-               let writefile = fs.writeFileSync(path.resolve(__dirname,input),readfile,'utf-8');
-
+            image.forEach((file,index)=>{
+                folderType = file.mimetype.split`/`[0]
+                console.log(folderType)
+                file.mv(path.resolve(__dirname,input,folderType,file.name), err=>{
+                    if(err) {
+                        return res.status(500).send(err);
+                    }
+                })
             })
-            res.json({data:'file upload complete'})
-    }
+        } else {
+                folderType = image.mimetype.split`/`[0]
+                console.log(folderType)
+                image.mv(path.resolve(__dirname,input,folderType,image.name), err=>{
+                    if(err) {
+                        return res.status(500).send(err);
+                    }
+                })
+            }
     }
     catch(err){
         throw new Error(err)
     }
 })
+
 // convert (get)
 app.route('/convert').get(async(req,res)=>{
     const {ext} = req.query // inbin, outbin, input-files
@@ -80,7 +93,6 @@ app.route('/convert').get(async(req,res)=>{
         throw new Error(err)
     }
 })
-
 // convert (post)
 // app.route('/convert').post(async(req,res)=>{
 //     const {ext} = req.body // inbin, outbin, input-files
@@ -112,6 +124,13 @@ app.route('/convert').get(async(req,res)=>{
 //         throw new Error(err)
 //     }
 // })
+
+
+
+
+
+
+
 startServer(app,port,4,interval,speed)
 // start the server
 function startServer(app,port,count,interval,speed){
@@ -130,3 +149,6 @@ function startServer(app,port,count,interval,speed){
     
 }
 
+app.use((req,res)=>{
+    res.status(404).send('<h2 style="width:100%;margin-top:1rem;text-align:center;border-bottom:2px solid black;">Page not found<br>Back to <a href="/" style="text-decoration:none;color:red;font-weight:bold;">Fileupload</a></h2>')
+})

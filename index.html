@@ -64,7 +64,8 @@
         </div>
         
           <ul id="file-hold-container" class="noselect hidden hold-col" class="noselect list-view"></ul>
-          <input multiple class="noselect hidden" type="file" name="file" id="file-id">
+          <form action="/upload" method="post" enctype="multipart/form-data" id="uploads"></form>
+          <input multiple class="noselect hidden" type="file" name="image" id="file-id" form="uploads">
           <img src="./media/upload.png" id="upload-img" class="passive-hidden noselect img-upload btn-big" alt="image to represent upload">
           <div id="file-info" class="hidden">
             <ul id="file-options-container" class="fo-footer">
