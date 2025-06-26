@@ -13,52 +13,55 @@ const ffmpeg = require('ffmpeg')
 let interval, speed = 100;
 const [input,output] = ['input','output']
 const tmpfile = require('./lib/tmp.js')
+// const tmp = require('tmp')
+const tempDir = require('./lib/temp.js')
 
+createTmpDir(tmp)
 
 app.use(fileupload());
 app.use(express.static(path.join(__dirname,'../'))) // static directory (public)
 app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
-app.use('/tmp',tmpfile)
+// app.use('/tmp',tmpfile)
 
 
 
 // routes
 // upload files (single/multi)
-// app.route('/upload').post((req,res,next)=>{
-//     const {image} = req.files // array
-//     console.log(image)
-//     let folderType, len;
-//     try{
-//         if(image.length>0){
-//             len = image.length
-//             // readfile
-//             image.forEach((file,index)=>{
-//                 folderType = file.mimetype.split`/`[0]
-//                 console.log(folderType)
-//                 file.mv(path.resolve(__dirname,input,folderType,file.name), err=>{
-//                     if(err) {
-//                         return res.status(500).send(err);
-//                     }
-//                 })
-//             })
-//         } else {
-//                 len = 1
-//                 folderType = image.mimetype.split`/`[0]
-//                 console.log(folderType)
-//                 image.mv(path.resolve(__dirname,input,folderType,image.name), err=>{
-//                     if(err) {
-//                         return res.status(500).send(err);
-//                     }
-//                 })
-//             }
-//             res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
-//     }
-//     catch(err){
-//         throw new Error(err)
-//     }
-// })
+app.route('/upload').post((req,res,next)=>{
+    const {image} = req.files // array
+    console.log(image)
+    let folderType, len;
+    try{
+        if(image.length>0){
+            len = image.length
+            // readfile
+            image.forEach((file,index)=>{
+                folderType = file.mimetype.split`/`[0]
+                console.log(folderType)
+                file.mv(path.resolve(__dirname,input,folderType,file.name), err=>{
+                    if(err) {
+                        return res.status(500).send(err);
+                    }
+                })
+            })
+        } else {
+                len = 1
+                folderType = image.mimetype.split`/`[0]
+                console.log(folderType)
+                image.mv(path.resolve(__dirname,input,folderType,image.name), err=>{
+                    if(err) {
+                        return res.status(500).send(err);
+                    }
+                })
+            }
+            res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
+    }
+    catch(err){
+        throw new Error(err)
+    }
+})
 
 // convert (get)
 // app.route('/convert').get(async(req,res)=>{
@@ -157,3 +160,9 @@ function startServer(app,port,count,interval,speed){
 app.use((req,res)=>{
     res.status(404).send('<h2 style="width:100%;margin-top:1rem;text-align:center;border-bottom:2px solid black;">Page not found<br>Back to <a href="/" style="text-decoration:none;color:red;font-weight:bold;">Fileupload</a></h2>')
 })
+
+
+function createTmpDir(tmp){
+    tmp.setGracefulCleanup()
+    tempDir(tmp)
+}
