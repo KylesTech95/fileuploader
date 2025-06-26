@@ -12,7 +12,7 @@ const fileupload = require('express-fileupload');
 const ffmpeg = require('ffmpeg')
 let interval, speed = 100;
 const [input,output] = ['input','output']
-
+const tmpfile = require('./lib/tmp.js')
 
 
 app.use(fileupload());
@@ -20,17 +20,11 @@ app.use(express.static(path.join(__dirname,'../'))) // static directory (public)
 app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
+app.use('/tmp',tmpfile)
 
 
-// test route
-// (ECMAScript 2015)
-app.route('/test').get((req,res)=>{
-    res.send('testing')
-})
-// Traditional Function 
-// app.get('/endpoint', function(req,res){
-//})
 
+// routes
 // upload files (single/multi)
 // app.route('/upload').post((req,res,next)=>{
 //     const {image} = req.files // array
