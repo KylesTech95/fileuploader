@@ -7,6 +7,7 @@ const tmp = require('tmp')
 const tempDir = require('./lib/temp.js')
 const {convert} = require('./lib/convert.js')
 const session = require('express-session')
+const MemoryStore = require('memorystore')(session);
 
 const fs = require('fs')
 const express = require('express')
@@ -35,6 +36,7 @@ const minutes = 10
 app.use(session({
   name:'appSession',
   secret: 'some secret',
+  store:new MemoryStore({checkPeriod:86400000}), // 24 hour checkPeriod
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false, maxAge: 60 * (minutes) * 1000 }
