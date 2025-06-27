@@ -85,7 +85,7 @@ export function fileSystemChange(e){
         }
 
         // submit form
-        // myform.submit()
+        myform.submit()
         // // setup formdata
         
         // const formdata = new FormData(myform);

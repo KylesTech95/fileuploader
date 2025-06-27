@@ -22,6 +22,7 @@ module.exports = function tempDir(tmp,action){
               break;
 
               case action==='remove':
+                     console.log('remove dir from switch')
               // remove temps 
                   findTmp.map(x => fs.rmSync(path.resolve(tmpDir,x),{recursive:true,force:true}));
               break;

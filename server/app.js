@@ -6,6 +6,7 @@ const t_m_p = require('os').tmpdir();
 const tmp = require('tmp')
 const tempDir = require('./lib/temp.js')
 const {convert} = require('./lib/convert.js')
+const session = require('express-session')
 
 const fs = require('fs')
 const express = require('express')
@@ -21,6 +22,7 @@ let interval, speed = 100;
 const [input,output] = ['input','output']
 const [create,remove] = ['create','remove']
 
+let maxAgeReset = Date.now()
 /*--------------------------------------------------------------- */
 // middleware
 app.use(express.static(path.resolve(__dirname,public)))
@@ -28,6 +30,24 @@ app.use(fileupload());
 app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
+// express session
+const minutes = 10
+app.use(session({
+  name:'appSession',
+  secret: 'some secret',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false, maxAge: 60 * (minutes) * 1000 }
+}))
+
+app.use((req,res,next)=>{
+    if((Date.now() - req.session.cookie.maxAge) > maxAgeReset){
+        // console.log("session expired\nremoving tmp dir");
+        removeTmpDir(tmp,remove);
+        maxAgeReset = Date.now();
+    }
+    next()
+})
 
 /*--------------------------------------------------------------- */
 
@@ -35,16 +55,20 @@ app.use(express.urlencoded({extended:true}))
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
     const {image} = req.files // array
-    console.log(image)
+    let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
+    // filter the directory for any temp files by regex
+    let getTmpName = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
+    // if(getTmpName.length > 1) console.log('More than 1 Tmp folders detected')
+    console.log(getTmpName)
     let folderType, len;
     try{
-        if(image.length>0){
+        if(image.length>1){
             len = image.length
             // readfile
             image.forEach((file,index)=>{
                 folderType = file.mimetype.split`/`[0]
                 console.log(folderType)
-                file.mv(path.resolve(__dirname,input,folderType,file.name), err=>{
+                file.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,file.name), err=>{
                     if(err) {
                         return res.status(500).send(err);
                     }
@@ -53,10 +77,10 @@ app.route('/upload').post((req,res,next)=>{
         } else {
                 len = 1
                 folderType = image.mimetype.split`/`[0]
-                console.log(folderType)
-                image.mv(path.resolve(__dirname,input,folderType,image.name), err=>{
+                // console.log(folderType)
+                image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                     if(err) {
-                        return res.status(500).send(err);
+                        console.log(err)
                     }
                 })
             }
@@ -149,7 +173,7 @@ app.route('/tmp/remove').get((req,res)=>{
         res.send("temps are removed!")
 
     } else {
-        console.log('temps not listed in directory:\n'+t_m_p)
+        // console.log('temps not listed in directory:\n'+t_m_p)
         res.send('No temps to remove')
     }
 
@@ -191,14 +215,14 @@ function checkTempDir(req,res){
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
-        console.log(findTemps);
+        // console.log(findTemps);
         if(findTemps.length < 1){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
             decorateTmp(directory, object, {count:2,names:[input,output]}) // decorate the temp directory
             // decorate input and output
-            decorateTmp(path.resolve(directory,input),object,{count:3,names:['video','audio','media']})
-            decorateTmp(path.resolve(directory,output),object,{count:3,names:['video','audio','media']})
+            decorateTmp(path.resolve(directory,input),object,{count:3,names:['video','audio','image']})
+            decorateTmp(path.resolve(directory,output),object,{count:3,names:['video','audio','image']})
             res.json({data:'temp dir created'})
         } else {
             res.json({data:'temp dir exists'})
@@ -217,12 +241,12 @@ function removeTmpDir(tmp){
 // decorate temporary directory
 function decorateTmp(path,object,options={count:1,encoding:'utf-8',names:[]}){
     let names = options.names, encoding = options.encoding, count = options.count
-    console.log(names)
+    // console.log(names)
     switch(true){
         case object==='dir':
             for(let i = 0; i < count; i++){
                 let dirname = (names.length<1 || names.length !== count) ? 'dir'+(i>0?i:'') : names[i] 
-                console.log(dirname)
+                // console.log(dirname)
                 // create directory
                 fs.mkdirSync(require('path').resolve(path,dirname),{encoding:encoding}); 
             }
