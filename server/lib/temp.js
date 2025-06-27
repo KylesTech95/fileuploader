@@ -6,25 +6,24 @@ const fs = require('fs')
 
 module.exports = function tempDir(tmp,action){
        let directory
-       console.log(tmpDir)
-       // remove tmp directories
+       // read tmp folder directory
        let tempFolder = fs.readdirSync(tmpDir,'utf-8');
-       let findTmp = tempFolder.filter(x=>/tmp-[0-9]+-[a_z]*/gi.test(x));
-       findTmp.map(x=> fs.rmdirSync(path.resolve(tmpDir,x)));
-       console.log("action type:")
-       console.log(action)
+       let findTmp = tempFolder.filter(x=>/tmp-[0-9]+-[a_z]*/gi.test(x))
+       
+       // switch statement
        switch(true){
+              
               case action==='create':
-              directory = tmp.dirSync();
-              console.log(directory);
+              // add tmp
+              if(findTmp.length < 1){
+                     directory = tmp.dirSync();
+                     console.log(directory);
+              }
               break;
 
               case action==='remove':
-              if(directory & tempFolder.find(f=>new RegExp(f,'g').test(directory.name))){
-                     fs.rmdirSync(path.resolve(directory.name),'utf-8')
-              } else {
-                     console.log('tmp does not exist yet')
-              }
+              // remove temps 
+                  findTmp.map(x => fs.rmSync(path.resolve(tmpDir,x),{recursive:true,force:true}));
               break;
 
               default:
