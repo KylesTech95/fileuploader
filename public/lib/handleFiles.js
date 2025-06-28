@@ -710,7 +710,21 @@ window.onkeyup = e => {
         document.body.classList.remove('hidden')
     }
 }
-window.onload = e => {
+window.onload = async e => {
+    // fetch existing files from /tmp directory
+    const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
+    console.log(tmpFiles)
+    for(let i in tmpFiles){ // iterate through files
+        for(let j = 0; j < tmpFiles[i].length; j++){
+            setTimeout(()=>{
+                console.log(tmpFiles[i][j])
+            },150 * (j+1));
+        }
+    }
+    
+
+
+
     let nums = [1,2,3];
     mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
     

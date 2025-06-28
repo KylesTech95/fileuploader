@@ -32,7 +32,7 @@ app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
 // express session
-const minutes = 10
+const minutes = 45
 app.use(session({
   name:'appSession',
   secret: 'some secret',
@@ -213,6 +213,7 @@ app.use((req,res)=>{
 
 /*--------------------------------------------------------------- */
 function checkTempDir(req,res){
+    let mediatypes = ['video','audio','image']
         // get temp directory by reading the path directory
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
         // filter the directory for any temp files by regex
@@ -223,11 +224,21 @@ function checkTempDir(req,res){
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
             decorateTmp(directory, object, {count:2,names:[input,output]}) // decorate the temp directory
             // decorate input and output
-            decorateTmp(path.resolve(directory,input),object,{count:3,names:['video','audio','image']})
-            decorateTmp(path.resolve(directory,output),object,{count:3,names:['video','audio','image']})
+            decorateTmp(path.resolve(directory,input),object,{count:3,names:mediatypes})
+            decorateTmp(path.resolve(directory,output),object,{count:3,names:mediatypes})
             res.json({data:'temp dir created'})
         } else {
-            res.json({data:'temp dir exists'})
+            let readAudio = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'audio'),'utf-8')
+            let readImage = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'image'),'utf-8')
+            let readVideo = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'video'),'utf-8')
+            console.log(readAudio)
+            console.log(readVideo)
+            console.log(readImage)
+            res.json({data:{
+                audio:readAudio,
+                video:readVideo,
+                image:readImage
+            }})
         }
 }
 

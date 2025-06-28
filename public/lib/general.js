@@ -1,5 +1,3 @@
-// check if tmp directory exists
-fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>console.log(d))
 const shift = document.getElementById('shift-img-tool')
 const ctrl = document.getElementById('ctrl-img-tool')
 const command = document.getElementById('command-img-tool')
