@@ -80,7 +80,7 @@ export function fileSystemChange(e){
         container.classList.remove('hidden');
         for(let i = 0; i < files.length; i++){ // iterate through files
              setTimeout(()=>{
-                uploadFiles(container,objtypes,filesize,scrollbar,files[i])
+                uploadFiles(container,objtypes,filesize,scrollbar,files[i],{fetch:true})
              },66 * (i+1));
         }
 
@@ -203,8 +203,9 @@ export function unselectEntity(elem){
 }
 
 // upload files
-function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI){
-        let currfile = fileOfI; // store file in variable       
+function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
+        let currfile = fileOfI; // store file in variable      
+        console.log(fileOfI);
         let result;     
             // create a div to represent the file
             let li = document.createElement('li')
@@ -212,10 +213,11 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI){
                 file:document.createElement('img'),
                 folder:document.createElement('img'),
                 img_parent:document.createElement('a'),
-                filetype:currfile.type.split`/`[1].replace(/x-ms-/g,'').replace(/\+xml/g,''),
+                filetype:!options.fetch ? currfile.type.split`/`[1].replace(/x-ms-/g,'').replace(/\+xml/g,'') : options.type,
                 p:document.createElement('p'),
             };
-            img.p.textContent = currfile.name
+            console.log(img)
+            img.p.textContent = !options.fetch ? currfile.name : currfile
             img.file.classList.add('file-icon-img');
             img.file.src = `./media/${'file'}-img.png`; // file src
             li.classList.add('file-obj-entity')
@@ -249,7 +251,7 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI){
             }
 
             unselectEntity(li)
-            li = handleFileByType(currfile,li) // return div and store in div
+            li = handleFileByType(currfile,li,options) // return div and store in div
             container.appendChild(li) // append div to container
             // if getMedia file === currfile
             if(li.getMedia === currfile){
@@ -260,11 +262,21 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI){
             }
 }
 // handle file by type
-function handleFileByType(file,div){
-    const type = file.type;
-    let type_pre = type.split`/`[0];
-    // create object property for the general type
-    file.genType = type_pre;
+function handleFileByType(file,div,options){ // pass a file (file)
+    console.log(file)
+    let type, type_pre;
+    if(!options.fetch){
+        type = file.type;
+        type_pre = type.split`/`[0];
+        // create object property for the general type
+        file.genType = type_pre;
+    } else {
+        type = options.type;
+        type_pre = type
+        // create object property for the general type
+        file.genType = type_pre;
+    }
+    console.log(type)
     // main.js:73 image/jpeg
     // main.js:73 image/png
     // main.js:73 text/rtf
@@ -710,45 +722,6 @@ window.onkeyup = e => {
         document.body.classList.remove('hidden')
     }
 }
-window.onload = async e => {
-    // fetch existing files from /tmp directory
-    const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
-    console.log(tmpFiles)
-    for(let i in tmpFiles){ // iterate through files
-        for(let j = 0; j < tmpFiles[i].length; j++){
-            setTimeout(()=>{
-                console.log(tmpFiles[i][j])
-            },150 * (j+1));
-        }
-    }
-    
-
-
-
-    let nums = [1,2,3];
-    mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
-    
-    dealWithSelectCounterBySize(window,select_counter)
-    // get the device type
-    const agent = window.navigator.userAgent;
-
-    // if device is a mac
-    if(isMacintosh(agent)){
-        command.classList.remove('hidden');
-    } else {
-        command.classList.add('hidden');
-
-    }
-    // if device is windows
-    if(isWindows(agent)){
-        command.classList.add('hidden');
-    }
-
-    // set timeout for upload img to appear (main)
-    setTimeout(()=>{
-        mainupload.classList.remove('passive-hidden')
-    },1000)
-}
 window.onscroll = e => {
     let scrollY = window.scrollY;
     let start = 100;
@@ -793,7 +766,58 @@ window.onscroll = e => {
     }
 }
 
+// window onload
+window.onload = async e => {
+    // fetch existing files from /tmp directory
+    const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
+    getExistingData(tmpFiles,filesize)
+    console.log(tmpFiles)
 
+    let nums = [1,2,3];
+    mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
+    
+    dealWithSelectCounterBySize(window,select_counter)
+    // get the device type
+    const agent = window.navigator.userAgent;
+
+    // if device is a mac
+    if(isMacintosh(agent)){
+        command.classList.remove('hidden');
+    } else {
+        command.classList.add('hidden');
+    }
+    // if device is windows
+    if(isWindows(agent)){
+        command.classList.add('hidden');
+    }
+
+    // set timeout for upload img to appear (main)
+    setTimeout(()=>{
+        mainupload.classList.remove('passive-hidden')
+    },1000)
+}
+// get existing data
+function getExistingData(tmp,filesize){
+    console.log(tmp)
+    let container = fileobj.imgcontainer
+    let objtypes = list_item.type
+    console.log(container)
+    for(let i in tmp){ // iterate through files
+        // console.log(i) // get properties - audio/video/image
+        // console.log(tmp[i])
+        for(let j in tmp[i]){
+            if(tmp[i].image.length > 0){
+                    let img = tmp[i][j]; // get file,
+                    let typeOf = i
+                        console.log(img)
+                setTimeout(()=>{
+                        // function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
+                        img.map(image => uploadFiles(container,objtypes,filesize,scrollbar,tmp[i],{fetch:true,type:typeOf}))
+                },150 * (j+1));
+            }
+        }
+    }
+}
 function sendToAbsolute(element){
     element.classList.add('absolute');
     element.classList.remove('fixed');

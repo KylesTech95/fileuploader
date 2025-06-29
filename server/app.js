@@ -32,14 +32,20 @@ app.use(express.json())
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
 // express session
-const minutes = 45
+const halftime = .5, // 30 seconds 
+      minute = 1, // 1 minute
+      short = 15, // 15 minutes
+      med = 30, // 30 minutes
+      long = 60 // 60 minutes
+
+
 app.use(session({
   name:'appSession',
   secret: 'some secret',
   store:new MemoryStore({checkPeriod:86400000}), // 24 hour checkPeriod
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, maxAge: 60 * (minutes) * 1000 }
+  cookie: { secure: false, maxAge: 60 * (long) * 1000 }
 }))
 
 app.use((req,res,next)=>{
@@ -57,6 +63,9 @@ app.use((req,res,next)=>{
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
     const {image} = req.files // array
+    console.log("Image passed:")
+    console.log(image)
+    console.log("count:\n"+image.length);
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
     let getTmpName = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
@@ -184,6 +193,16 @@ app.route('/tmp/remove').get((req,res)=>{
 // check if tmp exists
 app.route('/tmp/check').get(checkTempDir)
 
+// clear cookie
+app.route('/cookie/clear').get((req,res)=>{
+    req.session.cookie.epxires = null;
+    removeTmpDir(tmp,remove); // remove tmp folder(s), if any
+    res.json(req.session)
+})
+app.route('/cookie').get((req,res)=>{
+    res.json(req.session)
+})
+
 /*--------------------------------------------------------------- */
 
 
@@ -211,6 +230,7 @@ app.use((req,res)=>{
     res.status(404).send('<h2 style="width:100%;margin-top:1rem;text-align:center;border-bottom:2px solid black;">Page not found<br>Back to <a href="/" style="text-decoration:none;color:red;font-weight:bold;">Fileupload</a></h2>')
 })
 
+
 /*--------------------------------------------------------------- */
 function checkTempDir(req,res){
     let mediatypes = ['video','audio','image']
@@ -231,13 +251,19 @@ function checkTempDir(req,res){
             let readAudio = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'audio'),'utf-8')
             let readImage = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'image'),'utf-8')
             let readVideo = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'video'),'utf-8')
-            console.log(readAudio)
-            console.log(readVideo)
-            console.log(readImage)
+            // console.log(readAudio)
+            // console.log(readVideo)
+            // console.log(readImage)
+            let getStats = (arr,mediatype) => [...arr].map(name =>{
+                const encoding = 'utf-8'
+                let getstats = fs.statSync(path.resolve(t_m_p,findTemps[0],input,mediatype,name),encoding); // get file stats
+                return getstats
+            }) // check audio files in raw form
+
             res.json({data:{
-                audio:readAudio,
-                video:readVideo,
-                image:readImage
+                audio:{image:readAudio,type:'audio',stats:getStats(readAudio,'audio')},
+                video:{image:readVideo,type:'video',stats:getStats(readVideo,'video')},
+                image:{image:readImage,type:'image',stats:getStats(readImage,'image')}
             }})
         }
 }
