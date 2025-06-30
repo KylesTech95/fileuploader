@@ -79,9 +79,10 @@ export function fileSystemChange(e){
         fileinfo.classList.remove('hidden')
         container.classList.remove('hidden');
         for(let i = 0; i < files.length; i++){ // iterate through files
-             setTimeout(()=>{
+            //  setTimeout(()=>{
+            //     uploadFiles(container,objtypes,filesize,scrollbar,files[i],{fetch:true})
+            //  },66 * (i+1));
                 uploadFiles(container,objtypes,filesize,scrollbar,files[i],{fetch:true})
-             },66 * (i+1));
         }
 
         // submit form
