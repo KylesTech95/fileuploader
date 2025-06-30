@@ -34,6 +34,7 @@ let isMeta = false;
 
 let [keyisdown,keyisdown1] = [false,false]
 
+myform.onsubmit = e => e.preventDefault()
 
 // functions
 // getFiles
@@ -79,10 +80,10 @@ export function fileSystemChange(e){
         fileinfo.classList.remove('hidden')
         container.classList.remove('hidden');
         for(let i = 0; i < files.length; i++){ // iterate through files
-            //  setTimeout(()=>{
-            //     uploadFiles(container,objtypes,filesize,scrollbar,files[i],{fetch:true})
-            //  },66 * (i+1));
+            if([...container.children].filename !== files[i].name){
                 uploadFiles(container,objtypes,filesize,scrollbar,files[i],{fetch:true})
+            }
+            // console.log(files[i])
         }
 
         // submit form
@@ -835,5 +836,3 @@ async function postFetch(type,url,body){
     }
     return response
 }
-
-// document.querySelector('form').onsubmit = e => e.preventDefault(); // prevent form from submitting

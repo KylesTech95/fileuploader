@@ -16,7 +16,7 @@ async function convert(directory,input,output,outDir,options={height:undefined,w
     // edit the image here (crop,resize,etc...)
   /*----------------------------------------*/  
 //   console.log(image)
-    height || width ? image.resize({w:width,h:height}) : null
+    height && width ? image.resize({w:width,h:height}) : null
     //.crop({x:10,y:10,h:150,w:150})
   /*----------------------------------------*/  
 

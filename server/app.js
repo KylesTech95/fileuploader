@@ -63,6 +63,7 @@ app.use((req,res,next)=>{
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
     const {image} = req.files // array
+    console.log(image)
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
     let getTmpName = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
@@ -90,7 +91,7 @@ app.route('/upload').post((req,res,next)=>{
                                 }
                             })
                         } else {
-                            // console.log(`File ${file.name} already exists in ${mediaDir}`)
+                            console.log(`File ${file.name} already exists in ${mediaDir}`)
                         }
                     }
                 } else {
@@ -127,7 +128,7 @@ app.route('/upload').post((req,res,next)=>{
                     // move the file to tmp directory
                         image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                             if(err) {
-                                // console.log(err)
+                                console.log(err)
                             }
                         })
                 }
@@ -136,7 +137,7 @@ app.route('/upload').post((req,res,next)=>{
                 if(!currentFiles.includes(image.name)){
                     image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                         if(err) {
-                            // console.log(err)
+                            console.log(err)
                         }
                     })
                 }
@@ -144,7 +145,9 @@ app.route('/upload').post((req,res,next)=>{
                     // console.log(`File ${image.name} already exists in ${mediaDir}`)
                 }
             }
-            res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
+            let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
+            console.log(result)
+            res.redirect('/')
     }
     catch(err){
         throw new Error(err)
@@ -221,6 +224,7 @@ app.route('/upload').post((req,res,next)=>{
 //     }
 // })
 
+// force remove tmp directory
 app.route('/tmp/remove').get((req,res)=>{
     // get temp directory by reading the path directory
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
