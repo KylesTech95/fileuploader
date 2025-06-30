@@ -45,7 +45,10 @@ export function deleteFiles(files,elements,selectedFiles){
     // delete indication
     files.map(x=>{
         unselectEntity(x);
-        files.forEach((a,b)=>a.remove());
+        files.forEach((a,b)=>{
+            a.remove();
+            postFetch('json','/tmp/delete',{file:a}); // delete the file form server
+        });
             selectedFiles = [];
             updateFileCounter(elements,selectedFiles.length)
     })
@@ -86,14 +89,6 @@ export function fileSystemChange(e){
 
         // submit form
         myform.submit()
-        // // setup formdata
-        
-        // const formdata = new FormData(myform);
-        
-        // upload files to server (input dir)
-        // postFetch('/upload',{files:files}).then(r=>r.json()).then(d=>console.log(d.data));
-        
-
     } else {
         let type = 'error'
         let text = `${type.replace(/^e/i,'E')}:\nUpload Limit reached\nMaximum: ${maxFiles}`
@@ -203,7 +198,7 @@ export function unselectEntity(elem){
 }
 
 // upload files
-function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
+function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined, file:undefined}){
         let currfile = fileOfI; // store file in variable      
         console.log(fileOfI);
         let result;     
@@ -217,7 +212,8 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetc
                 p:document.createElement('p'),
             };
             console.log(img)
-            img.p.textContent = !options.fetch ? currfile.name : currfile
+            console.log(currfile)
+            img.p.textContent = !options.fetch ? currfile.name : options.file
             img.file.classList.add('file-icon-img');
             img.file.src = `./media/${'file'}-img.png`; // file src
             li.classList.add('file-obj-entity')
@@ -263,7 +259,7 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetc
 }
 // handle file by type
 function handleFileByType(file,div,options){ // pass a file (file)
-    console.log(file)
+    // console.log(file)
     let type, type_pre;
     if(!options.fetch){
         type = file.type;
@@ -356,6 +352,7 @@ function handleFileByType(file,div,options){ // pass a file (file)
     }
     div.getMedia = file;
     div.selected = false;
+    div.filename = options.file
     return div; // return the file
 }
 function handleFileSelection(e){
@@ -770,9 +767,9 @@ window.onscroll = e => {
 window.onload = async e => {
     // fetch existing files from /tmp directory
     const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
-    getExistingData(tmpFiles,filesize)
-    console.log(tmpFiles)
-
+    let alldata = getExistingData(tmpFiles,filesize)
+    console.log(alldata)
+    alldata > 0 ? fileobj.buttons.img.classList.add('hidden') : fileobj.buttons.img.classList.remove('hidden');
     let nums = [1,2,3];
     mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
     
@@ -801,22 +798,27 @@ function getExistingData(tmp,filesize){
     console.log(tmp)
     let container = fileobj.imgcontainer
     let objtypes = list_item.type
-    console.log(container)
+    let currentimg;
+    let allimages = []
     for(let i in tmp){ // iterate through files
-        // console.log(i) // get properties - audio/video/image
-        // console.log(tmp[i])
-        for(let j in tmp[i]){
-            if(tmp[i].image.length > 0){
-                    let img = tmp[i][j]; // get file,
-                    let typeOf = i
-                        console.log(img)
+        if(tmp[i].image && tmp[i].image.length > 0) currentimg = tmp[i];
+        // console.log(currentimg)
+        for(let j in currentimg){
+
+            if(/^image$/i.test(j)){
+                // console.log(currentimg[j])
+                let img = currentimg[j]; // get file,
+                let typeOf = i
+                // push image into allimages
+                allimages.push(allimages,...img)
                 setTimeout(()=>{
                         // function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
-                        img.map(image => uploadFiles(container,objtypes,filesize,scrollbar,tmp[i],{fetch:true,type:typeOf}))
+                        img.map(image => uploadFiles(container,objtypes,filesize,scrollbar,tmp[i],{fetch:true,type:typeOf,file:image}))
                 },150 * (j+1));
             }
         }
     }
+    return allimages;
 }
 function sendToAbsolute(element){
     element.classList.add('absolute');
@@ -827,20 +829,20 @@ function sendToFixed(element){
     element.classList.add('fixed');
 }
 
-// async function postFetch(type,url,body){
-//     let response
-//     switch(true){
-//         case type=='media':
-//         response = await fetch(url,{headers:{'Content-Type':'multipart/form-data'},method:'POST'})
+async function postFetch(type,url,body){
+    let response
+    switch(true){
+        case type=='media':
+        response = await fetch(url,{headers:{'Content-Type':'multipart/form-data'},method:'POST'})
         
-//         break;
+        break;
 
-//         case type=='json':
-//         response = await fetch(url,{headers:{'Content-Type':'application/json'},method:'POST',body:JSON.stringify(body)})
+        case type=='json':
+        response = await fetch(url,{headers:{'Content-Type':'application/json'},method:'POST',body:JSON.stringify(body)})
         
-//         break;
-//     }
-//     return response
-// }
+        break;
+    }
+    return response
+}
 
 // document.querySelector('form').onsubmit = e => e.preventDefault(); // prevent form from submitting
