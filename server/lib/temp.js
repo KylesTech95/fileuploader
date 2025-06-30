@@ -1,4 +1,5 @@
 const os = require('os')
+const t_m_p = require('os').tmpdir();
 const path = require('path')
 const tmpDir = os.tmpdir();
 const fs = require('fs')
@@ -8,7 +9,8 @@ module.exports = function tempDir(tmp,action){
        let directory
        // read tmp folder directory
        let tempFolder = fs.readdirSync(tmpDir,'utf-8');
-       let findTmp = tempFolder.filter(x=>/tmp-[0-9]+-[a_z]*/gi.test(x))
+       // let findTmp = tempFolder.filter(x=>/tmp-[0-9]+-[a_z]*/gi.test(x))
+       let findTmp = tempFolder.filter(x=>/^fileupload-/gi.test(x))
        
        // switch statement
        switch(true){
@@ -16,13 +18,15 @@ module.exports = function tempDir(tmp,action){
               case action==='create':
               // add tmp
               if(findTmp.length < 1){
+                     const datetime = new Date().toLocaleDateString().replace(/\//g,'.');
                      directory = tmp.dirSync();
-                     console.log(directory);
+                     const renameDir = {name:path.resolve(t_m_p,`fileupload-${datetime}`)}
+                     fs.renameSync(directory.name,renameDir.name);
+                     directory = renameDir
               }
               break;
 
               case action==='remove':
-                     console.log('remove dir from switch')
               // remove temps 
                   findTmp.map(x => fs.rmSync(path.resolve(tmpDir,x),{recursive:true,force:true}));
               break;

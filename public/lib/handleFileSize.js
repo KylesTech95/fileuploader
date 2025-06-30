@@ -32,14 +32,13 @@ function slideTab(e){
             }   
             // store position in filesize
             filesize = Math.ceil(position[0]-scrollbar.getBoundingClientRect().x);
-            // console.log(filesize)
-            // console.log(filesize)
+            // send filesize to the server
+            fetch('/filesize?size='+filesize)
             // update scrolltab position
             scrolltab.style.left = filesize + px
             let currentfiles = document.querySelectorAll('.file-icon-img') // get currentfiles
            return currentfiles.length > 0 ? [...currentfiles].map(f=>f.style.width = filesize + px) : null;
 
-            // console.log(position[0])
         }
 
     }
@@ -111,6 +110,7 @@ function fileSizeByClick(filesize,e){
     scrolltab.classList.add('qt-trans-5')
     scrolltab.style.left = (getClickPos-scrollbar.getBoundingClientRect().x) + px;
     filesize = Math.ceil(getClickPos-scrollbar.getBoundingClientRect().x) + px
+    fetch('/filesize?size='+Math.ceil(getClickPos-scrollbar.getBoundingClientRect().x))
 
     let currLis = [...document.querySelectorAll('.file-icon-img')];
     currLis.map(li=>li.style.width = filesize);

@@ -74,5 +74,3 @@ views.forEach(view=>{
 
 
 
-
-

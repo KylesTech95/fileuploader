@@ -8,6 +8,7 @@ const tempDir = require('./lib/temp.js')
 const {convert} = require('./lib/convert.js')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session);
+const tmpFileRegex = /^fileupload-/gi || new RegExp('^fileupload-','g')
 
 const fs = require('fs')
 const express = require('express')
@@ -38,7 +39,6 @@ const halftime = .5, // 30 seconds
       med = 30, // 30 minutes
       long = 60 // 60 minutes
 
-
 app.use(session({
   name:'appSession',
   secret: 'some secret',
@@ -47,7 +47,6 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false, maxAge: 60 * (long) * 1000 }
 }))
-
 app.use((req,res,next)=>{
     if((Date.now() - req.session.cookie.maxAge) > maxAgeReset){
         // // console.log("session expired\nremoving tmp dir");
@@ -60,13 +59,27 @@ app.use((req,res,next)=>{
 /*--------------------------------------------------------------- */
 
 // routes
+
+// get file size
+app.route('/filesize').get((req,res)=>{
+    let cookie;
+    const {size} = req.query;
+    // update cookie with filesize
+    if(!req.session){
+        console.log('session is not detected');
+    } else {
+        req.session.filesize = size;
+        // console.log("filesize updated to " + req.session.filesize)
+    }
+    res.json(req.session)
+})
+
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
     const {image} = req.files // array
-    console.log(image)
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
-    let getTmpName = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
+    let getTmpName = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
     // // if(getTmpName.length > 1) console.log('More than 1 Tmp folders detected')
     let folderType, len;
 
@@ -146,14 +159,12 @@ app.route('/upload').post((req,res,next)=>{
                 }
             }
             let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
-            console.log(result)
             res.redirect('/')
     }
     catch(err){
         throw new Error(err)
     }
 })
-
 // convert (get)
 // app.route('/convert').get(async(req,res)=>{
 //     const {type,ext} = req.query // inbin, outbin, input-files
@@ -229,7 +240,7 @@ app.route('/tmp/remove').get((req,res)=>{
     // get temp directory by reading the path directory
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
-    let findTemps = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
+    let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
     
     if(findTemps.length > 0){
         // remove temps
@@ -254,7 +265,7 @@ app.route('/tmp/delete').post((req,res)=>{
     // console.log(file)
     const tmpdirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
 
-    let findTemps = [...tmpdirectory].filter((file,index)=>/^tmp-/gi.test(file));
+    let findTemps = [...tmpdirectory].filter((file,index)=>tmpFileRegex.test(file));
     let filepath = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,foldertype),{encoding:'utf-8'});
     // console.log("DELETE PATH:")
     // console.log(filepath)
@@ -271,15 +282,17 @@ app.route('/tmp/delete').post((req,res)=>{
 })
 
 
+// view cookie
+app.route('/cookie').get((req,res)=>{
+    res.json(req.session)
+})
 // clear cookie
 app.route('/cookie/clear').get((req,res)=>{
     req.session.cookie.epxires = null;
     removeTmpDir(tmp,remove); // remove tmp folder(s), if any
     res.json(req.session)
 })
-app.route('/cookie').get((req,res)=>{
-    res.json(req.session)
-})
+
 
 
 /*--------------------------------------------------------------- */
@@ -294,11 +307,11 @@ function startServer(app,port,count,interval,speed){
                 count-=1
         } else {
                 app.listen(port,()=>{
-                // console.log('listening on port ' + port)
+                console.log('listening on port ' + port)
                 })
                 clearInterval(interval)
             }
-            // console.log(count)
+            console.log(count)
     },speed)
     
 }
@@ -316,11 +329,12 @@ function checkTempDir(req,res){
         // get temp directory by reading the path directory
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
         // filter the directory for any temp files by regex
-        let findTemps = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
+        let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
         // // console.log(findTemps);
         if(findTemps.length < 1){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
+            console.log("DIRECTORY\n"+directory)
             decorateTmp(directory, object, {count:2,names:[input,output]}) // decorate the temp directory
             // decorate input and output
             decorateTmp(path.resolve(directory,input),object,{count:3,names:mediatypes})
@@ -364,7 +378,6 @@ function decorateTmp(path,object,options={count:1,encoding:'utf-8',names:[]}){
         case object==='dir':
             for(let i = 0; i < count; i++){
                 let dirname = (names.length<1 || names.length !== count) ? 'dir'+(i>0?i:'') : names[i] 
-                // // console.log(dirname)
                 // create directory
                 fs.mkdirSync(require('path').resolve(path,dirname),{encoding:encoding}); 
             }
@@ -383,5 +396,6 @@ function decorateTmp(path,object,options={count:1,encoding:'utf-8',names:[]}){
         // console.log(undefined);
     }
 }
+
 /*--------------------------------------------------------------- */
 
