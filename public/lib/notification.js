@@ -21,7 +21,7 @@ export function pushNotification(element,text,type,counter){
     let timer = setInterval(()=>{
         counter++
         // console.log(counter)
-        if(counter==appear_time) console.log('notificaiton appears!')
+        if(counter==appear_time) // console.log('notificaiton appears!')
         if(counter==disappear_time) clearTimeout(timer)
     },1000)
 

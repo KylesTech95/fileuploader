@@ -69,9 +69,6 @@ export function fileSystemChange(e){
     let element = e.currentTarget.element || undefined;
     let container = fileobj.imgcontainer
 
-    console.log(files)
-    // cleanup leftover files
-    // cleanUpExistingFiles(container)
 
     // if files exist
     const maxFiles = 25;
@@ -112,7 +109,7 @@ export function updateFileCounter(elements,num){
             disableElement(elements)
         }
     } else {
-        console.log('element not detected for counting files')
+        // console.log('element not detected for counting files')
         return false;
     }
 }
@@ -200,7 +197,6 @@ export function unselectEntity(elem){
 // upload files
 function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined, file:undefined}){
         let currfile = fileOfI; // store file in variable      
-        console.log(fileOfI);
         let result;     
             // create a div to represent the file
             let li = document.createElement('li')
@@ -211,8 +207,6 @@ function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetc
                 filetype:!options.fetch ? currfile.type.split`/`[1].replace(/x-ms-/g,'').replace(/\+xml/g,'') : options.type,
                 p:document.createElement('p'),
             };
-            console.log(img)
-            console.log(currfile)
             img.p.textContent = !options.fetch ? currfile.name : options.file
             img.file.classList.add('file-icon-img');
             img.file.src = `./media/${'file'}-img.png`; // file src
@@ -272,7 +266,6 @@ function handleFileByType(file,div,options){ // pass a file (file)
         // create object property for the general type
         file.genType = type_pre;
     }
-    console.log(type)
     // main.js:73 image/jpeg
     // main.js:73 image/png
     // main.js:73 text/rtf
@@ -426,11 +419,11 @@ function handleMultiSelection(children,target,arr){
             if(arr){
                 // id start
                 start = !start ? arr[arr.length-1] : start;
-                console.log(start)
+                // console.log(start)
                 // id end
                 end = target
                 selectEntity(end)
-                console.log(end)
+                // console.log(end)
 
                 if(children.indexOf(start) < children.indexOf(end)){
                     // going down
@@ -461,8 +454,8 @@ function handleMultiSelection(children,target,arr){
                 let stidx = children.indexOf(start)
                 let enidx = children.indexOf(end)
             
-                console.log(stidx)
-                console.log(enidx)
+                // console.log(stidx)
+                // console.log(enidx)
 
                 
                 // unselect the rest from end to < start 
@@ -552,7 +545,7 @@ function handleTool(tool){
         isShift = true;
     break;
     case /stop/i.test(id):
-        console.log('you clicked stop!')
+        // console.log('you clicked stop!')
         tool.classList.add('disabled-tool')
         isCtl = false;
         isMeta = false;
@@ -581,9 +574,9 @@ function enableScroll(target,filesize){
 function disableScroll(target){
     target.classList.add('close-scroll')
     target.classList.remove('open-scroll')
-    console.log(target)
+    // console.log(target)
     let tab = [...target.children].find(t=>t.id=='scrolltab' && t.tagName=='SPAN');
-    console.log(tab)
+    // console.log(tab)
     if(tab){
         tab.style.left = 0 + "px";
     }
@@ -591,9 +584,9 @@ function disableScroll(target){
 
 
 scrolltab.onclick = e => {
-    console.log('target is clicked');
+    // console.log('target is clicked');
     if(filesize) e.currentTarget.style.left = filesize
-    console.log(filesize)
+    // console.log(filesize)
     // console.log(e.currentTarget);
 }
 
@@ -603,7 +596,7 @@ scrolltab.onclick = e => {
 window.onresize = e => {
     // resize fileobj.buttons
     if(document.querySelectorAll('.file-obj-entity').length >= 1){
-        console.log('files exist so button should stay')
+        // console.log('files exist so button should stay')
         fileobj.buttons.img.style.top = ((filecontainer.clientHeight/2) + (header.clientHeight)) + "px"
     }
     fileobj.buttons.img.style.left =((window.innerWidth/2) - fileobj.buttons.img.clientWidth/2) + "px"
@@ -636,7 +629,7 @@ window.onkeydown = e => {
     }
     if(/(Delete|Backspace)/i.test(e.key) && !garbage.classList.contains('no-pointer')){
         garbage.click();
-        console.log('garbage - remote click')
+        // console.log('garbage - remote click')
         isShift = false;
         isMeta = false;
         isCtl = false;
@@ -759,7 +752,7 @@ window.onscroll = e => {
             garbage_clone.remove();
         }
     } else {
-        console.log('we need files before scroll fn works')
+        // console.log('we need files before scroll fn works')
     }
 }
 
@@ -768,8 +761,8 @@ window.onload = async e => {
     // fetch existing files from /tmp directory
     const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
     let alldata = getExistingData(tmpFiles,filesize)
-    console.log(alldata)
-    alldata > 0 ? fileobj.buttons.img.classList.add('hidden') : fileobj.buttons.img.classList.remove('hidden');
+    
+    alldata.length > 0 ? fileobj.buttons.img.classList.add('hidden') : fileobj.buttons.img.classList.remove('hidden');
     let nums = [1,2,3];
     mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
     
@@ -795,7 +788,6 @@ window.onload = async e => {
 }
 // get existing data
 function getExistingData(tmp,filesize){
-    console.log(tmp)
     let container = fileobj.imgcontainer
     let objtypes = list_item.type
     let currentimg;
@@ -810,11 +802,9 @@ function getExistingData(tmp,filesize){
                 let img = currentimg[j]; // get file,
                 let typeOf = i
                 // push image into allimages
-                allimages.push(allimages,...img)
-                setTimeout(()=>{
-                        // function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
-                        img.map(image => uploadFiles(container,objtypes,filesize,scrollbar,tmp[i],{fetch:true,type:typeOf,file:image}))
-                },150 * (j+1));
+                img.forEach(ig => allimages.indexOf(ig)==-1 ? allimages.push(ig) : null)
+                // function uploadFiles(container,objtypes,filesize,scrollbar,fileOfI,options={fetch:false,type:undefined}){
+                img.map(image => uploadFiles(container,objtypes,filesize,scrollbar,tmp[i],{fetch:true,type:typeOf,file:image}))
             }
         }
     }

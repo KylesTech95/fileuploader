@@ -50,7 +50,7 @@ app.use(session({
 
 app.use((req,res,next)=>{
     if((Date.now() - req.session.cookie.maxAge) > maxAgeReset){
-        // console.log("session expired\nremoving tmp dir");
+        // // console.log("session expired\nremoving tmp dir");
         removeTmpDir(tmp,remove);
         maxAgeReset = Date.now();
     }
@@ -66,7 +66,7 @@ app.route('/upload').post((req,res,next)=>{
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
     let getTmpName = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
-    // if(getTmpName.length > 1) console.log('More than 1 Tmp folders detected')
+    // // if(getTmpName.length > 1) console.log('More than 1 Tmp folders detected')
     let folderType, len;
 
     try{
@@ -77,7 +77,7 @@ app.route('/upload').post((req,res,next)=>{
                 folderType = file.mimetype.split`/`[0];
                 let mediaDir = path.resolve(t_m_p,getTmpName[0],input,folderType);
                 let currentFiles = fs.readdirSync(mediaDir,{encoding:'utf-8'});
-                console.log(folderType)
+                // console.log(folderType)
                 // check if filenames exist before uploading to the tmp directory
                 if(currentFiles.length > 0){
                     for(let i = 0; i < currentFiles.length; i++){
@@ -86,20 +86,20 @@ app.route('/upload').post((req,res,next)=>{
                             // move the file to tmp directory
                             file.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,file.name), err=>{
                                 if(err) {
-                                    console.log(err)
+                                    // console.log(err)
                                 }
                             })
                         } else {
-                            console.log(`File ${file.name} already exists in ${mediaDir}`)
+                            // console.log(`File ${file.name} already exists in ${mediaDir}`)
                         }
                     }
                 } else {
-                    console.log('Media Dir is empty')
+                    // console.log('Media Dir is empty')
                     // first time upload
                     // move the file to tmp directory
                         file.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,file.name), err=>{
                             if(err) {
-                                console.log(err)
+                                // console.log(err)
                             }
                         })
                 }
@@ -111,23 +111,23 @@ app.route('/upload').post((req,res,next)=>{
                 let currentFiles = fs.readdirSync(mediaDir,{encoding:'utf-8'});
                 // check if filenames exist before uploading to the tmp directory
                 if(currentFiles.length > 0){
-                    console.log(currentFiles)
+                    // console.log(currentFiles)
                     if(!currentFiles.includes(image.name)){
                         // move the file to tmp directory
                         image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                             if(err) {
-                                console.log(err)
+                                // console.log(err)
                             }
                         })
                     } else {
-                        console.log(`File ${image.name} already exists in ${mediaDir}`)
+                        // console.log(`File ${image.name} already exists in ${mediaDir}`)
                     }
                 } else {
                     // first time upload
                     // move the file to tmp directory
                         image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                             if(err) {
-                                console.log(err)
+                                // console.log(err)
                             }
                         })
                 }
@@ -136,12 +136,12 @@ app.route('/upload').post((req,res,next)=>{
                 if(!currentFiles.includes(image.name)){
                     image.mv(path.resolve(t_m_p,getTmpName[0],input,folderType,image.name), err=>{
                         if(err) {
-                            console.log(err)
+                            // console.log(err)
                         }
                     })
                 }
                 else {
-                    console.log(`File ${image.name} already exists in ${mediaDir}`)
+                    // console.log(`File ${image.name} already exists in ${mediaDir}`)
                 }
             }
             res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
@@ -155,25 +155,25 @@ app.route('/upload').post((req,res,next)=>{
 // app.route('/convert').get(async(req,res)=>{
 //     const {type,ext} = req.query // inbin, outbin, input-files
 //     const dirFromConversion = '..', inbin = `${dirFromConversion}/${input}`, outbin = `${dirFromConversion}/${output}` // bins for input and output
-//     // console.log(req.query)
-//     // console.log(inbin)
-//     // console.log(outbin)
-//     console.log(ext)
+// //     // console.log(req.query)
+// //     // console.log(inbin)
+// //     // console.log(outbin)
+// //     console.log(ext)
 //     const files = [...fs.readdirSync(path.resolve(__dirname,input,type),'utf-8')];
 
 //     let folderType;
-//     // console.log(files) 
+// //     // console.log(files) 
 //     try{
 //         if(files && files.length>0){
 //             for(let i = 0; i < files.length; i++){
 //                 let inpFileName = files[i].split('.')[0];
 //                 let currentExt = files[i].split('.')[1];
 //                 if(currentExt!==ext){ // if extension does not match
-//                     console.log('Conversion #' + (i+1))
+// //                     console.log('Conversion #' + (i+1))
 //                     convert(inbin,files[i],`${inpFileName}.${ext}`,outbin); // jpg to png
 //                     // convert(input,files[i],output,{height:256,width:300}); // jpg to png
 //                     // clear the loop// while loop
-//                     console.log('Conversion #' + (i+1))
+// //                     console.log('Conversion #' + (i+1))
 //                     convert(inbin,files[i],`${inpFileName}.${ext}`,outbin); // jpg to png
 //                     // convert(input,files[i],output,{height:256,width:300}); // jpg to png
 //                     // clear the loop
@@ -193,19 +193,19 @@ app.route('/upload').post((req,res,next)=>{
 // app.route('/convert').post(async(req,res)=>{
 //     const {ext} = req.body // inbin, outbin, input-files
 //     const dirFromConversion = '..', inbin = `${dirFromConversion}/${input}`, outbin = `${dirFromConversion}/${output}` // bins for input and output
-//     // console.log(req.query)
-//     // console.log(inbin)
-//     // console.log(outbin)
-//     console.log(ext)
+// //     // console.log(req.query)
+// //     // console.log(inbin)
+// //     // console.log(outbin)
+// //     console.log(ext)
 //     const files = [...fs.readdirSync(path.resolve(__dirname,input),'utf-8')]
-//     console.log(files) 
+// //     console.log(files) 
 //     try{
 //         if(files && files.length>0){
 
 //             for(let i = 0; i < files.length; i++){
 //                 let inpFileName = files[i].split('.')[0];
 //                 // while loop
-//                 console.log('Conversion #' + (i+1))
+// //                 console.log('Conversion #' + (i+1))
 //                 convert(inbin,files[i],`${inpFileName}.${ext}`,outbin); // jpg to png
 //                 // convert(input,files[i],output,{height:256,width:300}); // jpg to png
 //                 // clear the loop
@@ -233,7 +233,7 @@ app.route('/tmp/remove').get((req,res)=>{
         res.send("temps are removed!")
 
     } else {
-        // console.log('temps not listed in directory:\n'+t_m_p)
+        // // console.log('temps not listed in directory:\n'+t_m_p)
         res.send('No temps to remove')
     }
 
@@ -246,20 +246,20 @@ app.route('/tmp/delete').post((req,res)=>{
     const {file} = req.body
     const foldertype = file.getMedia.genType;
     const filename = file.filename;
-    // console.log(filename)
-    console.log(file)
+    // // console.log(filename)
+    // console.log(file)
     const tmpdirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
 
     let findTemps = [...tmpdirectory].filter((file,index)=>/^tmp-/gi.test(file));
     let filepath = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,foldertype),{encoding:'utf-8'});
-    console.log("DELETE PATH:")
-    console.log(filepath)
+    // console.log("DELETE PATH:")
+    // console.log(filepath)
     if(filepath.includes(filename)){
         // remove file 
         fs.rmSync(path.resolve(t_m_p,findTemps[0],input,foldertype,filename));
         res.send('file is deleted')
     } else {
-        console.log('file cannot be removed')
+        // console.log('file cannot be removed')
         res.send('No files to delete')
 
     }
@@ -290,11 +290,11 @@ function startServer(app,port,count,interval,speed){
                 count-=1
         } else {
                 app.listen(port,()=>{
-                console.log('listening on port ' + port)
+                // console.log('listening on port ' + port)
                 })
                 clearInterval(interval)
             }
-            console.log(count)
+            // console.log(count)
     },speed)
     
 }
@@ -313,7 +313,7 @@ function checkTempDir(req,res){
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>/^tmp-/gi.test(file));
-        // console.log(findTemps);
+        // // console.log(findTemps);
         if(findTemps.length < 1){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
@@ -326,9 +326,9 @@ function checkTempDir(req,res){
             let readAudio = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'audio'),'utf-8')
             let readImage = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'image'),'utf-8')
             let readVideo = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'video'),'utf-8')
-            // console.log(readAudio)
-            // console.log(readVideo)
-            // console.log(readImage)
+            // // console.log(readAudio)
+            // // console.log(readVideo)
+            // // console.log(readImage)
             let getStats = (arr,mediatype) => [...arr].map(name =>{
                 const encoding = 'utf-8'
                 let getstats = fs.statSync(path.resolve(t_m_p,findTemps[0],input,mediatype,name),encoding); // get file stats
@@ -355,12 +355,12 @@ function removeTmpDir(tmp){
 // decorate temporary directory
 function decorateTmp(path,object,options={count:1,encoding:'utf-8',names:[]}){
     let names = options.names, encoding = options.encoding, count = options.count
-    // console.log(names)
+    // // console.log(names)
     switch(true){
         case object==='dir':
             for(let i = 0; i < count; i++){
                 let dirname = (names.length<1 || names.length !== count) ? 'dir'+(i>0?i:'') : names[i] 
-                // console.log(dirname)
+                // // console.log(dirname)
                 // create directory
                 fs.mkdirSync(require('path').resolve(path,dirname),{encoding:encoding}); 
             }
@@ -376,7 +376,7 @@ function decorateTmp(path,object,options={count:1,encoding:'utf-8',names:[]}){
         break;
 
         default:
-        console.log(undefined);
+        // console.log(undefined);
     }
 }
 /*--------------------------------------------------------------- */
