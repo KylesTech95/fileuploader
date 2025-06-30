@@ -159,7 +159,8 @@ app.route('/upload').post((req,res,next)=>{
                 }
             }
             let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
-            res.redirect('/')
+            // res.redirect('/')
+            res.json(result)
     }
     catch(err){
         throw new Error(err)
