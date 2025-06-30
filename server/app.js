@@ -47,6 +47,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: { secure: false, maxAge: 60 * (long) * 1000 }
 }))
+// check cookie expiration
 app.use((req,res,next)=>{
     if((Date.now() - req.session.cookie.maxAge) > maxAgeReset){
         // // console.log("session expired\nremoving tmp dir");
@@ -160,12 +161,13 @@ app.route('/upload').post((req,res,next)=>{
             }
             let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
             // res.redirect('/')
-            res.json(result)
+            res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
     }
     catch(err){
         throw new Error(err)
     }
 })
+
 // convert (get)
 // app.route('/convert').get(async(req,res)=>{
 //     const {type,ext} = req.query // inbin, outbin, input-files
@@ -237,6 +239,8 @@ app.route('/upload').post((req,res,next)=>{
 // })
 
 // force remove tmp directory
+
+// remove tmp dir
 app.route('/tmp/remove').get((req,res)=>{
     // get temp directory by reading the path directory
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
@@ -254,6 +258,7 @@ app.route('/tmp/remove').get((req,res)=>{
     }
 
 })
+
 // check if tmp exists
 app.route('/tmp/check').get(checkTempDir)
 
@@ -282,18 +287,17 @@ app.route('/tmp/delete').post((req,res)=>{
     
 })
 
-
 // view cookie
 app.route('/cookie').get((req,res)=>{
     res.json(req.session)
 })
+
 // clear cookie
 app.route('/cookie/clear').get((req,res)=>{
     req.session.cookie.epxires = null;
     removeTmpDir(tmp,remove); // remove tmp folder(s), if any
     res.json(req.session)
 })
-
 
 
 /*--------------------------------------------------------------- */
