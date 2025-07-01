@@ -37,7 +37,10 @@ const halftime = .5, // 30 seconds
       minute = 1, // 1 minute
       short = 15, // 15 minutes
       med = 30, // 30 minutes
-      long = 60 // 60 minutes
+      long = 60, // 60 minutes
+      day = 86400000
+
+    //   24 hours * 60 minutes/hour * 60 seconds/minute * 1000 milliseconds/second = 86,400,000 milliseconds. 
 
 app.use(session({
   name:'appSession',
@@ -45,7 +48,7 @@ app.use(session({
   store:new MemoryStore({checkPeriod:86400000}), // 24 hour checkPeriod
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, maxAge: 60 * (long) * 1000 }
+  cookie: { secure: false, maxAge: 60 * (day) * 1000 }
 }))
 // check cookie expiration
 app.use((req,res,next)=>{
