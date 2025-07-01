@@ -87,6 +87,11 @@ app.route('/upload').post((req,res,next)=>{
     // // if(getTmpName.length > 1) console.log('More than 1 Tmp folders detected')
     let folderType, len;
 
+    /* console out */
+    console.log("tmp directory:\n"+t_m_p+"\n-----------------\ntmp name:\n"+getTmpName[0]+"\n-----------------\nfilename(s):\n"+JSON.stringify(image.name))
+
+    //------------------------------
+
     try{
         if(image.length>1){
             len = image.length
@@ -338,7 +343,8 @@ function checkTempDir(req,res){
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
-        // // console.log(findTemps);
+        console.log("LOCATING EXISTING TMP FOLDERS:")
+        console.log(findTemps);
         if(findTemps.length < 1){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
