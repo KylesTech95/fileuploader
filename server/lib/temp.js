@@ -23,6 +23,8 @@ module.exports = function tempDir(tmp,action){
                      const renameDir = {name:path.resolve(t_m_p,`fileupload-${datetime}`)}
                      fs.renameSync(directory.name,renameDir.name);
                      directory = renameDir
+              } else {
+                     console.log("tmp dir exists\nDo not create another!")
               }
               break;
 

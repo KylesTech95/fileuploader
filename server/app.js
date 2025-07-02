@@ -372,7 +372,7 @@ function checkTempDir(req,res){
 }
 
 function createTmpDir(tmp){
-    tmp.setGracefulCleanup()
+    // tmp.setGracefulCleanup()
     return tempDir(tmp,create)
 }
 

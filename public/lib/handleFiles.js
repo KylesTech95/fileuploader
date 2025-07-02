@@ -764,7 +764,7 @@ window.onscroll = e => {
 window.onload = async e => {
     // fetch existing files from /tmp directory
     const tmpFiles = await fetch('/tmp/check',{method:'GET'}).then(r=>r.json()).then(d=>d.data) // check if tmp directory exists
-    let alldata = getExistingData(tmpFiles,filesize)
+    let alldata = getExistingData(await tmpFiles,filesize)
     
     alldata.length > 0 ? fileobj.buttons.img.classList.add('hidden') : fileobj.buttons.img.classList.remove('hidden');
     let nums = [1,2,3];
