@@ -38,27 +38,21 @@ const halftime = .5, // 30 seconds
       short = 15, // 15 minutes
       med = 30, // 30 minutes
       long = 60, // 60 minutes
-      day = 86400000
+      day = 24
 
     //   24 hours * 60 minutes/hour * 60 seconds/minute * 1000 milliseconds/second = 86,400,000 milliseconds. 
 
 app.use(session({
-  name:'appSession',
-  secret: 'some secret',
-  store:new MemoryStore({checkPeriod:86400000}), // 24 hour checkPeriod
+  name:'fileSesh',
+  secret: process.env.SECRETSESH,
+  store:new MemoryStore({checkPeriod:day}), // 24 hour checkPeriod
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false, maxAge: 60 * (day) * 1000 }
+  cookie: { secure: process.env.SECCOOKIE && process.env.SECCOOKIE === 'secure' ? true : false,
+            httpOnly: process.env.SECCOOKIE && process.env.SECCOOKIE === 'secure' ? true : false,
+            maxAge: 60 * 60 * 1000 * day
+        }
 }))
-// check cookie expiration
-app.use((req,res,next)=>{
-    if((Date.now() - req.session.cookie.maxAge) > maxAgeReset){
-        // // console.log("session expired\nremoving tmp dir");
-        removeTmpDir(tmp,remove);
-        maxAgeReset = Date.now();
-    }
-    next()
-})
 
 /*--------------------------------------------------------------- */
 
@@ -66,9 +60,9 @@ app.use((req,res,next)=>{
 
 // get file size
 app.route('/filesize').get((req,res)=>{
-    let cookie;
     const {size} = req.query;
-    // update cookie with filesize
+    console.log(size)
+    // update session with filesize
     if(!req.session){
         console.log('session is not detected');
     } else {
@@ -80,6 +74,7 @@ app.route('/filesize').get((req,res)=>{
 
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
+    console.log(req.files)
     const {image} = req.files // array
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
@@ -168,8 +163,8 @@ app.route('/upload').post((req,res,next)=>{
                 }
             }
             let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
-            // res.redirect('/')
-            res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
+            res.redirect('/')
+            // res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
     }
     catch(err){
         throw new Error(err)
@@ -296,7 +291,7 @@ app.route('/tmp/delete').post((req,res)=>{
 })
 
 // view cookie
-app.route('/cookie').get((req,res)=>{
+app.route('/session').get((req,res)=>{
     res.json(req.session)
 })
 

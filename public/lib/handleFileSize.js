@@ -5,7 +5,7 @@ let trackpos = []
 let mytarget = [] // pointer/target 
 let px = 'px'
 let targetlocked = false;
-export let filesize;
+export let filesize = 85;
 
 // functions
 function slideTab(e){
@@ -106,7 +106,7 @@ function fileSizeByClick(filesize,e){
     let scrollbar = e.currentTarget.parentElement || scrollbar;
     console.log(scrollbar)
     let getClickPos = e.clientX;
-    console.log(getClickPos);
+    // console.log(getClickPos);
     scrolltab.classList.add('qt-trans-5')
     scrolltab.style.left = (getClickPos-scrollbar.getBoundingClientRect().x) + px;
     filesize = Math.ceil(getClickPos-scrollbar.getBoundingClientRect().x) + px

@@ -88,6 +88,8 @@ export function fileSystemChange(e){
 
         // submit form
         myform.submit()
+        // postFetch('media','/upload',new FormData(document.getElementById('uploads')))
+        
     } else {
         let type = 'error'
         let text = `${type.replace(/^e/i,'E')}:\nUpload Limit reached\nMaximum: ${maxFiles}`
@@ -825,7 +827,7 @@ async function postFetch(type,url,body){
     let response
     switch(true){
         case type=='media':
-        response = await fetch(url,{headers:{'Content-Type':'multipart/form-data'},method:'POST'})
+        response = await fetch(url,{headers:{'Content-Type':'multipart/form-data'},method:'POST',body:body})
         
         break;
 
