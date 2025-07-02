@@ -1,6 +1,7 @@
-require('dotenv').config(
-    { path: require('path').resolve(__dirname,'env','.env'), debug: true, override: false }
-) // control the path of .env
+// require('dotenv').config(
+//     { path: require('path').resolve(__dirname,'env','.env'), debug: true, override: false }
+// ) // control the path of .env
+require('dotenv').config()
 // temp directory (based on operating system)
 const t_m_p = require('os').tmpdir();
 const tmp = require('tmp')
