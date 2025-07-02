@@ -50,7 +50,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: { secure: process.env.SECCOOKIE && process.env.SECCOOKIE === 'secure' ? true : false,
-            httpOnly: process.env.SECCOOKIE && process.env.SECCOOKIE === 'secure' ? true : false,
+            httpOnly: process.env.SECCOOKIE && process.env.SECCOOKIE === 'secure' ? false : true,
             maxAge: 60 * 60 * 1000 * day
         }
 }))
