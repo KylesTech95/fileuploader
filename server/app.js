@@ -343,7 +343,7 @@ function checkTempDir(req,res){
         let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
         console.log("LOCATING EXISTING TMP FOLDERS:")
         console.log(findTemps);
-        if(findTemps.length < 1 && !tmpDirectory.find(fi=>tmpFileRegex.test(file))){
+        if(findTemps.length < 1 && !tmpDirectory.find(fi=>tmpFileRegex.test(fi))){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
             console.log("DIRECTORY\n"+directory)
