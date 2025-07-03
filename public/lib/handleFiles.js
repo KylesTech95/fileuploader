@@ -767,8 +767,8 @@ window.onload = async e => {
     let alldata = getExistingData(await tmpFiles,filesize)
     
     alldata.length > 0 ? fileobj.buttons.img.classList.add('hidden') : fileobj.buttons.img.classList.remove('hidden');
-    let nums = [1,2,3];
-    mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
+    // let nums = [1,2,3];
+    // mvbg.style.backgroundImage = `url('./media/bg${nums[Math.floor(Math.random()*nums.length)]}.jpg')`;
     
     dealWithSelectCounterBySize(window,select_counter)
     // get the device type

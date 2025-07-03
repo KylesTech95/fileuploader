@@ -176,6 +176,8 @@ left:0;
 }
 #file-hold-container{
     display:flex; 
+    background-color:pink;
+
     height:100%;
     min-height:675px;
     padding-bottom:1rem;

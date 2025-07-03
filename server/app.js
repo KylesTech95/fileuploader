@@ -333,6 +333,7 @@ app.use((req,res)=>{
 
 
 /*--------------------------------------------------------------- */
+let captureTmp;
 function checkTempDir(req,res){
     let mediatypes = ['video','audio','image']
         // get temp directory by reading the path directory
@@ -341,6 +342,7 @@ function checkTempDir(req,res){
         console.dir(tmpDirectory, {maxArrayLength: null, depth: null})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
+        if(findTemps.length > 0) captureTmp = findTemps[0]
         console.log("LOCATING EXISTING TMP FOLDERS:")
         console.log(findTemps);
         if(findTemps.length < 1 && !tmpDirectory.find(fi=>tmpFileRegex.test(fi))){
@@ -353,9 +355,9 @@ function checkTempDir(req,res){
             decorateTmp(path.resolve(directory,output),object,{count:3,names:mediatypes})
             res.json({data:'temp dir created'})
         } else {
-            let readAudio = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'audio'),'utf-8')
-            let readImage = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'image'),'utf-8')
-            let readVideo = fs.readdirSync(path.resolve(t_m_p,findTemps[0],input,'video'),'utf-8')
+            let readAudio = fs.readdirSync(path.resolve(t_m_p,(findTemps[0]||captureTmp),input,'audio'),'utf-8')
+            let readImage = fs.readdirSync(path.resolve(t_m_p,(findTemps[0]||captureTmp),input,'image'),'utf-8')
+            let readVideo = fs.readdirSync(path.resolve(t_m_p,(findTemps[0]||captureTmp),input,'video'),'utf-8')
             // // console.log(readAudio)
             // // console.log(readVideo)
             // // console.log(readImage)
