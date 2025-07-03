@@ -27,7 +27,8 @@ module.exports = function tempDir(tmp,action){
                      console.log("tmp dir exists\nDo not create another!")
               }
               break;
-
+              
+              // remove temp
               case action==='remove':
               // remove temps 
                   findTmp.map(x => fs.rmSync(path.resolve(tmpDir,x),{recursive:true,force:true}));

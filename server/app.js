@@ -9,7 +9,7 @@ const tempDir = require('./lib/temp.js')
 const {convert} = require('./lib/convert.js')
 const session = require('express-session')
 const MemoryStore = require('memorystore')(session);
-const tmpFileRegex = /^fileupload-/gi || new RegExp('^fileupload-','g')
+const tmpFileRegex = /^fileupload-/gi
 
 const fs = require('fs')
 const express = require('express')
