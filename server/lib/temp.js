@@ -19,7 +19,7 @@ module.exports = function tempDir(tmp,action){
               // add tmp
               if(findTmp.length < 1){
                      const datetime = new Date().toLocaleDateString().replace(/\//g,'.');
-                     directory = tmp.dirSync();
+                     directory = tmp.dirSync({keep:true}); // prevent automatic cleanup
                      const renameDir = {name:path.resolve(t_m_p,`fileupload-${datetime}`)}
                      fs.renameSync(directory.name,renameDir.name);
                      directory = renameDir
