@@ -337,6 +337,8 @@ function checkTempDir(req,res){
     let mediatypes = ['video','audio','image']
         // get temp directory by reading the path directory
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
+        console.log("CHECK TMP DIRECTORY CONTENTS:")
+        console.dir(tmpDirectory, {maxArrayLength: null, depth: null})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
         console.log("LOCATING EXISTING TMP FOLDERS:")
