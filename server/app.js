@@ -13,7 +13,7 @@ const tmpFileRegex = /^fileupload-/gi
 
 const fs = require('fs')
 const express = require('express')
-const port = process.env.PORT2||3300;
+const port = 3000;
 const path = require('path')
 const app = express();
 const cors = require('cors')
