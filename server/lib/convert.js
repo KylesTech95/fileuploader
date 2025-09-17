@@ -53,7 +53,6 @@ function checkSameFileName(directory,{readdirSync} = require('fs'),filename){
     const filenames = [...locateFiles]
     // console.log("filenames: "+filenames)
     filenames.length < 1 ? result = false : result = true;
-    console.log("bool: "+result)
     // return object
     return {
         samefile:result,

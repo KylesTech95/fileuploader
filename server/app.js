@@ -62,20 +62,17 @@ app.use(session({
 // get file size
 app.route('/filesize').get((req,res)=>{
     const {size} = req.query;
-    console.log(size)
     // update session with filesize
     if(!req.session){
         console.log('session is not detected');
     } else {
         req.session.filesize = size;
-        // console.log("filesize updated to " + req.session.filesize)
     }
     res.json(req.session)
 })
 
 // upload files (single/multi)
 app.route('/upload').post((req,res,next)=>{
-    console.log(req.files)
     const {image} = req.files // array
     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
     // filter the directory for any temp files by regex
@@ -84,7 +81,7 @@ app.route('/upload').post((req,res,next)=>{
     let folderType, len;
 
     /* console out */
-    console.log("tmp directory:\n"+t_m_p+"\n-----------------\ntmp name:\n"+getTmpName[0]+"\n-----------------\nfilename(s):\n"+JSON.stringify(image.name))
+    // console.log("tmp directory:\n"+t_m_p+"\n-----------------\ntmp name:\n"+getTmpName[0]+"\n-----------------\nfilename(s):\n"+JSON.stringify(image.name))
 
     //------------------------------
 
@@ -163,6 +160,7 @@ app.route('/upload').post((req,res,next)=>{
                     // console.log(`File ${image.name} already exists in ${mediaDir}`)
                 }
             }
+            
             let result = {data:`${len} ${len<2?'file':'files'} uploaded to the server`,files:image}
             res.redirect('/')
             // res.json({data:`${len} ${len<2?'file':'files'} uploaded to the server`})
@@ -170,6 +168,7 @@ app.route('/upload').post((req,res,next)=>{
     catch(err){
         throw new Error(err)
     }
+    // res.status(200).send('upload endpoint in development')
 })
 
 // convert (get)
@@ -245,23 +244,23 @@ app.route('/upload').post((req,res,next)=>{
 // force remove tmp directory
 
 // remove tmp dir
-app.route('/tmp/remove').get((req,res)=>{
-    // get temp directory by reading the path directory
-    let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
-    // filter the directory for any temp files by regex
-    let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
+// app.route('/tmp/remove').get((req,res)=>{
+//     // get temp directory by reading the path directory
+//     let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
+//     // filter the directory for any temp files by regex
+//     let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
     
-    if(findTemps.length > 0){
-        // remove temps
-        removeTmpDir(t_m_p,findTemps)
-        res.send("temps are removed!")
+//     if(findTemps.length > 0){
+//         // remove temps
+//         removeTmpDir(t_m_p,findTemps)
+//         res.send("temps are removed!")
 
-    } else {
-        // // console.log('temps not listed in directory:\n'+t_m_p)
-        res.send('No temps to remove')
-    }
+//     } else {
+//         // // console.log('temps not listed in directory:\n'+t_m_p)
+//         res.send('No temps to remove')
+//     }
 
-})
+// })
 
 // check if tmp exists
 app.route('/tmp/check').get(checkTempDir)
@@ -338,17 +337,16 @@ function checkTempDir(req,res){
     let mediatypes = ['video','audio','image']
         // get temp directory by reading the path directory
         let tmpDirectory = fs.readdirSync(t_m_p,{encoding:'utf-8'})
-        console.log("CHECK TMP DIRECTORY CONTENTS:")
+        // console.log("CHECK TMP DIRECTORY CONTENTS:")
         console.dir(tmpDirectory, {maxArrayLength: null, depth: null})
         // filter the directory for any temp files by regex
         let findTemps = [...tmpDirectory].filter((file,index)=>tmpFileRegex.test(file));
         if(findTemps.length > 0) captureTmp = findTemps[0]
-        console.log("LOCATING EXISTING TMP FOLDERS:")
-        console.log(findTemps);
+        // console.log("LOCATING EXISTING TMP FOLDERS:")
         if(findTemps.length < 1 && !tmpDirectory.find(fi=>tmpFileRegex.test(fi))){
             let object = 'dir'
             let directory = createTmpDir(tmp)['name']; // create temp directory when server starts
-            console.log("DIRECTORY\n"+directory)
+            // console.log("DIRECTORY\n"+directory)
             decorateTmp(directory, object, {count:2,names:[input,output]}) // decorate the temp directory
             // decorate input and output
             decorateTmp(path.resolve(directory,input),object,{count:3,names:mediatypes})

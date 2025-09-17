@@ -119,9 +119,9 @@ header>h1{
     padding:1.5rem;
     box-shadow: 0 2.5px 12px .9px #333;
 }
-/* #mv-bg1{
+#mv-bg1{
     background-image: url('./media/bg1.jpg');
-} */
+}
 #mv-bg2{
     background-blend-mode: multiply;
     background-color:#ffffff;
