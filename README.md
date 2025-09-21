@@ -1,5 +1,6 @@
 # Mock Filesystem
 
+<img src="./media/fileimg.png" style="transform:scale(.8)">
 ## About
 A mock filesystem prototype that handles file uploads, file selection and error handling.
 
