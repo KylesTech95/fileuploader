@@ -28,6 +28,10 @@ A mock filesystem prototype that handles file uploads, file selection and error 
 </div>
 <br>
 
+## Languages:
+1. JavaScript
+2. CSS
+3. HTML
 
 ## Under Development
 1. Image conversion
